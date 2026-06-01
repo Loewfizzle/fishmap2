@@ -6,7 +6,7 @@ A beautiful, mobile-first single-file web app for finding quick public fishing a
 
 ## Features
 
-- **20 real public fishing locations** (Kent County parks, Grand River accesses, Reeds Lake, etc.)
+- **25 real public fishing locations** (Kent County parks, Grand River accesses, Reeds Lake, etc.)
 - Animated submarine-style radar logo with neon cyberpunk effects
 - Interactive Leaflet map with custom neon markers
   - Cyan = Pier / Dock
