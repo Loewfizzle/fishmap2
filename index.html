@@ -11,24 +11,24 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
-      /* Very light, clean, professional palette */
-      --bg-primary: #FFFFFF;
+      /* Fun, bright, fresh water-inspired professional palette */
+      --bg-primary: #F0F9FF;       /* Light fresh blue */
       --bg-surface: #FFFFFF;
-      --bg-surface-2: #F8FAFC;
+      --bg-surface-2: #E0F2FE;     /* Soft blue tint */
       --text-primary: #0F172A;
       --text-secondary: #475569;
-      --accent: #0284C7;           /* Professional sky blue */
-      --accent-secondary: #0D9488; /* Teal */
-      --border: #E2E8F0;
-      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --accent: #0EA5E9;           /* Bright sky blue */
+      --accent-warm: #F59E0B;      /* Sunny amber for fun/energy */
+      --border: #BAE6FD;
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
       --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     html, body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #FFFFFF;
-      color: var(--text-primary);
+      background-color: #F0F9FF;   /* Fresh light blue-white */
+      color: #0F172A;
       -webkit-font-smoothing: antialiased;
       touch-action: manipulation;
     }
@@ -59,13 +59,13 @@
       filter: drop-shadow(0 0 4px rgba(2, 132, 199, 0.2));
     }
 
-    /* Map container - very light and clean */
+    /* Map container - fun and bright */
     #map {
       width: 100%;
       height: min(520px, 62vh);
       border-radius: 16px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-md);
+      border: 1px solid #7DD3FC;
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
       overflow: hidden;
       background: #FFFFFF;
     }
@@ -139,57 +139,57 @@
     .legend-dot.cyan { border-color: var(--accent-cyan); background: rgba(0,249,255,0.15); color: var(--accent-cyan); }
     .legend-dot.violet { border-color: var(--accent-violet); background: rgba(192,38,255,0.15); color: var(--accent-violet); }
 
-    /* Spot cards - clean professional */
+    /* Spot cards - fun and friendly */
     #spots-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 12px 0 32px; }
     @media (min-width: 480px) {
       #spots-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
     }
     .spot-card {
-      background: var(--bg-surface); 
-      border: 1px solid var(--border); 
-      border-radius: 12px; 
+      background: #FFFFFF; 
+      border: 1px solid #7DD3FC; 
+      border-radius: 16px; 
       padding: 14px;
       cursor: pointer; 
       display: flex; 
       flex-direction: column; 
       gap: 8px; 
       min-height: 148px;
-      box-shadow: var(--shadow);
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     }
     .spot-card:hover { 
-      border-color: var(--accent); 
-      transform: translateY(-2px); 
-      box-shadow: var(--shadow-md); 
+      border-color: #0EA5E9; 
+      transform: translateY(-3px); 
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
     }
     .spot-card.near-highlight { 
-      border-color: var(--accent); 
-      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); 
+      border-color: #0EA5E9; 
+      box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.2); 
     }
     .spot-card .badge { 
       align-self: flex-start; 
       font-size: 10px; 
-      font-weight: 600; 
-      padding: 2px 8px; 
+      font-weight: 700; 
+      padding: 3px 9px; 
       border-radius: 9999px; 
-      letter-spacing: 0.3px; 
+      letter-spacing: 0.5px; 
       text-transform: uppercase; 
-      background: #E0F2FE; 
-      color: #0369A1; 
-      border: 1px solid #BAE6FD;
+      background: #FEF3C7; 
+      color: #B45309;
+      border: 1px solid #FCD34D;
     }
-    .spot-card h4 { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.2; }
-    .spot-card .meta { font-size: 12px; color: var(--text-secondary); margin: 0; }
+    .spot-card h4 { margin: 0; font-size: 15px; font-weight: 700; line-height: 1.2; }
+    .spot-card .meta { font-size: 12px; color: #64748B; margin: 0; }
     .spot-card .species { display: flex; flex-wrap: wrap; gap: 4px; margin-top: auto; }
     .species-pill { 
       font-size: 10px; 
-      padding: 1px 6px; 
+      padding: 2px 7px; 
       border-radius: 999px; 
-      background: #F1F5F9; 
-      border: 1px solid var(--border); 
-      color: var(--text-secondary); 
+      background: #E0F2FE; 
+      border: 1px solid #7DD3FC; 
+      color: #0369A1; 
       white-space: nowrap; 
     }
-    .spot-card .dist { font-size: 11px; font-weight: 600; color: var(--accent); margin-top: 4px; }
+    .spot-card .dist { font-size: 11px; font-weight: 700; color: #0EA5E9; margin-top: 4px; }
 
     /* Toast */
     .toast {
@@ -204,17 +204,17 @@
     .toast button { font-size: 12px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--accent-cyan); background: transparent; color: var(--accent-cyan); cursor: pointer; min-height: 32px; }
     .toast button:hover { background: rgba(0,249,255,0.1); }
 
-    /* Modal - clean professional */
-    .modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(4px); display: none; align-items: flex-end; justify-content: center; z-index: 10000; padding: 0; }
+    /* Modal - fun and friendly */
+    .modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.35); backdrop-filter: blur(6px); display: none; align-items: flex-end; justify-content: center; z-index: 10000; padding: 0; }
     .modal.visible { display: flex; }
     .modal-content {
-      background: var(--bg-surface); width: 100%; max-width: 520px; max-height: 92vh; border-radius: 16px 16px 0 0;
-      border: 1px solid var(--border); box-shadow: var(--shadow-md);
+      background: #FFFFFF; width: 100%; max-width: 520px; max-height: 92vh; border-radius: 20px 20px 0 0;
+      border: 1px solid #7DD3FC; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
       overflow: hidden; display: flex; flex-direction: column; position: relative;
     }
     @media (min-width: 640px) {
       .modal { align-items: center; padding: 20px; }
-      .modal-content { border-radius: 16px; max-height: 86vh; }
+      .modal-content { border-radius: 20px; max-height: 86vh; }
     }
     .modal-header { padding: 18px 20px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between; gap: 12px; position: relative; z-index: 1; }
     .modal-header .badge { font-size: 11px; padding: 4px 11px; border-radius: 999px; font-weight: 700; letter-spacing: 0.6px; }
@@ -249,12 +249,19 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      border: 2px solid;
-      background: rgba(0, 0, 0, 0.4);
-      color: var(--text-primary);
+      border: 2px solid #0EA5E9;
+      background: #0EA5E9;
+      color: white;
       transition: all 0.15s cubic-bezier(0.23, 1, 0.32, 1);
-      position: relative;
-      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgb(14 165 233 / 0.3);
+    }
+    .modal-actions .modal-btn:hover {
+      background: #0284C7;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 15px -3px rgb(14 165 233 / 0.4);
+    }
+    .modal-actions .modal-btn:active {
+      transform: scale(0.985);
     }
 
     .modal-actions .modal-btn .btn-icon {
@@ -318,11 +325,11 @@
 <body class="bg-[#0a0a0f] text-[#f0f0ff]">
   <div class="max-w-5xl mx-auto px-4 sm:px-6 bg-white">
     <!-- Header -->
-    <header class="sticky top-0 z-50 bg-white border-b border-[var(--border)] py-4 sm:py-5">
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#7DD3FC] py-4 sm:py-5 shadow-sm">
       <div class="flex items-center justify-between gap-3 sm:gap-4 min-w-0">
         <div class="flex items-center gap-x-3 min-w-0">
           <!-- Animated Submarine Radar Logo -->
-          <div class="relative flex-shrink-0 p-1">
+          <div class="relative flex-shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="radar-logo w-10 h-10 sm:w-11 sm:h-11" aria-label="FishMap Radar Logo">
             <style>
               .radar-logo .pulse-ring { animation: radar-pulse 2.2s ease-in-out infinite alternate; }
@@ -376,16 +383,16 @@
           </div>
           <div class="min-w-0">
             <h1 class="text-2xl sm:text-4xl font-bold tracking-[0.02em] text-[#0F172A] leading-none">FishMap</h1>
-            <p class="text-[10px] sm:text-xs tracking-[1.5px] text-[#64748B] font-medium mt-0.5">SHORE • PIER • DOCK • BYRON CENTER, MI</p>
+            <p class="text-[10px] sm:text-xs tracking-[2px] text-[#0EA5E9] font-semibold mt-0.5">SHORE • PIER • DOCK • BYRON CENTER, MI</p>
           </div>
         </div>
         <div class="flex items-center gap-1.5 sm:gap-2">
           <button id="near-me-btn"
-                  class="inline-flex items-center gap-2 px-4 sm:px-5 h-11 rounded-xl border border-[var(--accent)] bg-[var(--accent)] text-white font-semibold text-sm active:scale-[0.985] hover:bg-[#0369A1] hover:shadow-md transition-all justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] shadow-sm">
+                  class="inline-flex items-center gap-2 px-4 sm:px-5 h-11 rounded-2xl bg-[#0EA5E9] text-white font-semibold text-sm active:scale-[0.985] hover:bg-[#0284C7] hover:shadow-lg transition-all justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0EA5E9] shadow-md">
             Near Me
           </button>
           <button id="reset-btn"
-                  class="inline-flex items-center gap-2 px-4 h-11 rounded-xl border border-[var(--border)] bg-white text-[var(--text-primary)] font-semibold text-sm active:scale-[0.985] hover:bg-[var(--bg-surface-2)] hover:shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]">
+                  class="inline-flex items-center gap-2 px-4 h-11 rounded-2xl border border-[#7DD3FC] bg-white text-[#0F172A] font-semibold text-sm active:scale-[0.985] hover:bg-[#F0F9FF] hover:shadow transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0EA5E9]">
             ⟲ Reset
           </button>
         </div>
