@@ -380,7 +380,7 @@
 
     <!-- Explore header -->
     <div class="flex items-center justify-between mt-2 mb-3">
-      <h3 class="text-sm font-semibold tracking-[1.5px] text-[#a0a0c0]">ALL 20 PUBLIC SPOTS</h3>
+      <h3 id="spots-section-title" class="text-sm font-semibold tracking-[1.5px] text-[#a0a0c0]">ALL 20 PUBLIC SPOTS</h3>
       <span class="hidden sm:inline text-[10px] text-[#666] font-mono">TAP ANY CARD OR MARKER</span>
     </div>
 
@@ -504,6 +504,8 @@
     let map, spotMarkers = [], currentHighlightLayer = null, highlightTimeout = null, lastUserPosition = null;
     let spotsGridEl, toastEl, toastMsgEl, toastActionsEl, modalEl, currentModalSpot = null;
 
+    const defaultSpotOrder = [...spotsData];   // original Byron Center order + static approx_miles (used for default view + Reset)
+
     function toRad(deg) { return deg * Math.PI / 180; }
     function calculateDistance(lat1, lon1, lat2, lon2) {
       const R = 3958.8;
@@ -594,8 +596,10 @@
               .sort((a,b) => a.dist - b.dist);
             const top = withDist.slice(0, 5);
 
+            // Re-render the entire list in real distance order from the user's location
+            renderSpotList(withDist.map(d => d.spot), withDist);
+
             highlightClosestSpots(top);
-            updateListDistances(withDist);
             highlightListCards(top.map(t => t.spot));
 
             const nearest = withDist[0];
@@ -612,19 +616,6 @@
           },
           { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
         );
-      });
-    }
-
-    function updateListDistances(withDistances) {
-      const cards = document.querySelectorAll('#spots-grid .spot-card');
-      cards.forEach(card => {
-        const name = card.dataset.name;
-        const match = withDistances.find(d => d.spot.name === name);
-        const distEl = card.querySelector('.dist');
-        if (distEl && match) {
-          distEl.textContent = `${match.dist.toFixed(1)} mi from you`;
-          distEl.style.color = '#0284C7';
-        }
       });
     }
 
@@ -650,13 +641,10 @@
         map.flyTo(DEFAULT_CENTER, DEFAULT_ZOOM, { duration: 0.7 });
       }
 
-      // Revert distance labels
-      document.querySelectorAll('#spots-grid .spot-card .dist').forEach(el => {
-        const card = el.closest('.spot-card');
-        const spot = spotsData.find(s => s.name === card.dataset.name);
-        if (spot) el.textContent = `${spot.approx_miles} mi away`;
-        el.style.color = '';
-      });
+      // Restore original Byron Center ordering + static distance labels
+      renderSpotList();
+
+      lastUserPosition = null;
     }
 
     function setupReset() {
@@ -664,18 +652,46 @@
       if (btn) btn.addEventListener('click', resetMapView);
     }
 
-    function populateSpotList() {
+    function renderSpotList(orderedSpots = defaultSpotOrder, liveDistances = null) {
       const grid = document.getElementById('spots-grid');
       if (!grid) return;
       spotsGridEl = grid;
       grid.innerHTML = '';
-      spotsData.forEach(spot => {
+
+      // Update section header to reflect current sort mode
+      const titleEl = document.getElementById('spots-section-title');
+      if (titleEl) {
+        if (liveDistances && liveDistances.length > 0) {
+          titleEl.innerHTML = 'ALL 20 PUBLIC SPOTS <span class="text-[#0284C7] font-normal text-xs tracking-normal">— sorted by distance from you</span>';
+        } else {
+          titleEl.textContent = 'ALL 20 PUBLIC SPOTS';
+        }
+      }
+
+      // Build quick lookup for live user distances if provided
+      const liveDistMap = new Map();
+      if (liveDistances && Array.isArray(liveDistances)) {
+        liveDistances.forEach(item => {
+          if (item.spot && typeof item.dist === 'number') {
+            liveDistMap.set(item.spot.name, item.dist);
+          }
+        });
+      }
+
+      orderedSpots.forEach(spot => {
         const isPier = isPierOrDock(spot.access_type);
         const badgeClass = isPier ? 'pier' : 'shore';
         const badgeText = isPier ? 'PIER/DOCK' : 'SHORE';
+
+        const liveDist = liveDistMap.get(spot.name);
+        const distText = liveDist !== undefined
+          ? `${liveDist.toFixed(1)} mi from you`
+          : `${spot.approx_miles} mi away`;
+
         const card = document.createElement('div');
         card.className = 'spot-card';
         card.dataset.name = spot.name;
+
         card.innerHTML = `
           <div class="flex items-start justify-between gap-2">
             <div class="min-w-0 flex-1">
@@ -685,14 +701,20 @@
             <span class="badge ${badgeClass}">${badgeText}</span>
           </div>
           <div class="species">${spot.species.slice(0,4).map(s => `<span class="species-pill">${s}</span>`).join('')}</div>
-          <div class="dist">${spot.approx_miles} mi away</div>
+          <div class="dist" style="${liveDist !== undefined ? 'color:#0284C7;font-weight:600;' : ''}">${distText}</div>
         `;
+
         card.addEventListener('click', () => {
           if (window.openSpotModal) window.openSpotModal(spot);
           if (map) map.flyTo([spot.lat, spot.lng], Math.max(map.getZoom(), 13), { duration: 0.5 });
         });
         grid.appendChild(card);
       });
+    }
+
+    // Backwards-compatible alias for initial load
+    function populateSpotList() {
+      renderSpotList();
     }
 
     function showToast(message, hasAction = false, closest = null) {
