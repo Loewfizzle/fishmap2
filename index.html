@@ -155,7 +155,10 @@
     .legend-dot.violet { border-color: var(--accent-violet); background: rgba(192,38,255,0.15); color: var(--accent-violet); }
 
     /* Spot cards */
-    #spots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin: 12px 0 32px; }
+    #spots-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 12px 0 32px; }
+    @media (min-width: 480px) {
+      #spots-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+    }
     .spot-card {
       background: var(--bg-surface); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 14px;
       cursor: pointer; display: flex; flex-direction: column; gap: 8px; min-height: 148px;
@@ -217,7 +220,10 @@
     .species-pill { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-primary); white-space: nowrap; }
     .modal-description { font-size: 14.5px; line-height: 1.55; color: var(--text-primary); margin: 8px 0 14px; }
     .modal-tip { font-size: 12.5px; padding: 8px 12px; border-radius: 10px; background: rgba(0,249,255,0.06); border: 1px solid rgba(0,249,255,0.2); color: var(--accent-cyan); margin-bottom: 14px; }
-    .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 1; }
+    .modal-actions { display: grid; grid-template-columns: 1fr; gap: 10px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 1; }
+    @media (min-width: 360px) {
+      .modal-actions { grid-template-columns: 1fr 1fr; }
+    }
     .modal-actions .modal-btn {
       min-height: 52px; padding: 12px 16px; font-size: 15px; font-weight: 700; border-radius: 12px; cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 8px; border: 2px solid;
@@ -229,12 +235,12 @@
 <body class="bg-[#0a0a0f] text-[#f0f0ff]">
   <div class="max-w-5xl mx-auto px-4 sm:px-6">
     <!-- Header -->
-    <header class="sticky top-0 z-50 bg-[#0a0a0f]/95 backdrop-blur-xl border-b border-white/10 py-4">
-      <div class="flex items-center justify-between gap-4">
-        <div class="flex items-center gap-x-3">
+    <header class="sticky top-0 z-50 bg-[#0a0a0f]/95 backdrop-blur-xl border-b border-white/10 py-3 sm:py-4">
+      <div class="flex items-center justify-between gap-2 sm:gap-4 min-w-0">
+        <div class="flex items-center gap-x-3 min-w-0">
           <!-- Animated Submarine Radar Logo - enhanced container for stronger cyberpunk presence -->
-          <div class="relative flex-shrink-0 p-1 rounded-full bg-[#0a0a0f] ring-1 ring-[#00f9ff]/30 shadow-[0_0_20px_rgba(0,249,255,0.25)]">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="radar-logo w-11 h-11 drop-shadow-[0_0_12px_#00f9ff]" aria-label="FishMap Radar Logo">
+          <div class="relative flex-shrink-0 p-0.5 sm:p-1 rounded-full bg-[#0a0a0f] ring-1 ring-[#00f9ff]/30 shadow-[0_0_20px_rgba(0,249,255,0.25)]">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="radar-logo w-9 h-9 sm:w-11 sm:h-11 drop-shadow-[0_0_12px_#00f9ff]" aria-label="FishMap Radar Logo">
             <style>
               .radar-logo .pulse-ring { animation: radar-pulse 2.2s ease-in-out infinite alternate; }
               @keyframes radar-pulse { from { opacity: 0.4; } to { opacity: 0.82; } }
@@ -286,17 +292,17 @@
           </svg>
           </div>
           <div class="min-w-0">
-            <h1 class="text-3xl sm:text-4xl font-bold tracking-[0.06em] text-white neon-text-cyan leading-none">FishMap</h1>
-            <p class="text-[10px] sm:text-xs tracking-[2.8px] text-[#ff00aa] font-medium mt-0.5">SHORE • PIER • DOCK • BYRON CENTER, MI</p>
+            <h1 class="text-2xl sm:text-4xl font-bold tracking-[0.06em] text-white neon-text-cyan leading-none">FishMap</h1>
+            <p class="text-[9px] sm:text-xs tracking-[2.8px] text-[#ff00aa] font-medium mt-0.5">SHORE • PIER • DOCK • BYRON CENTER, MI</p>
           </div>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1.5 sm:gap-2">
           <button id="near-me-btn"
-                  class="inline-flex items-center gap-2 px-5 h-11 rounded-2xl border border-[#00f9ff] bg-[#00f9ff]/10 text-[#00f9ff] font-semibold text-sm tracking-[0.5px] active:scale-[0.985] hover:bg-[#00f9ff]/20 hover:shadow-[0_0_12px_rgba(0,249,255,0.5)] transition-all min-w-[110px] justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00f9ff]">
-            <span>📍</span> <span>Near Me</span>
+                  class="inline-flex items-center gap-2 px-3 sm:px-5 h-11 rounded-2xl border border-[#00f9ff] bg-[#00f9ff]/10 text-[#00f9ff] font-semibold text-sm tracking-[0.5px] active:scale-[0.985] hover:bg-[#00f9ff]/20 hover:shadow-[0_0_12px_rgba(0,249,255,0.5)] transition-all justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00f9ff]">
+            <span>Near Me</span>
           </button>
           <button id="reset-btn"
-                  class="inline-flex items-center gap-2 px-4 h-11 rounded-2xl border border-[#c026ff] bg-[#c026ff]/10 text-[#c026ff] font-semibold text-sm tracking-[0.5px] active:scale-[0.985] hover:bg-[#c026ff]/20 hover:shadow-[0_0_12px_rgba(192,38,255,0.5)] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c026ff]">
+                  class="inline-flex items-center gap-2 px-3 sm:px-4 h-11 rounded-2xl border border-[#c026ff] bg-[#c026ff]/10 text-[#c026ff] font-semibold text-sm tracking-[0.5px] active:scale-[0.985] hover:bg-[#c026ff]/20 hover:shadow-[0_0_12px_rgba(192,38,255,0.5)] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c026ff]">
             ⟲ Reset
           </button>
         </div>
@@ -304,9 +310,9 @@
     </header>
 
     <!-- Intro for amateur anglers -->
-    <div class="py-6 text-center max-w-md mx-auto">
-      <p class="text-[#a0a0c0] text-[15px] leading-relaxed">Quick public shore, pier &amp; dock fishing for busy anglers. All spots within 15 miles of Byron Center — no boat required. Perfect for 1–2 hour trips after work or on weekends.</p>
-      <p class="text-[11px] text-[#ff00aa] tracking-[2px] mt-2 font-medium">TAP A NEON MARKER OR USE NEAR ME TO START</p>
+    <div class="py-4 sm:py-6 text-center max-w-md mx-auto">
+      <p class="text-[#a0a0c0] text-sm sm:text-[15px] leading-relaxed">Quick public shore, pier &amp; dock fishing for busy anglers. All spots within 15 miles of Byron Center — no boat required.</p>
+      <p class="text-[10px] sm:text-[11px] text-[#ff00aa] tracking-[2px] mt-2 font-medium">TAP A NEON MARKER OR USE NEAR ME TO START</p>
     </div>
 
     <!-- Map -->
@@ -316,15 +322,15 @@
     </div>
 
     <!-- Legend -->
-    <div class="legend mt-3">
-      <div class="legend-item"><span class="legend-dot cyan"></span><span>Pier / Dock (Cyan)</span></div>
-      <div class="legend-item"><span class="legend-dot violet"></span><span>Shore / Bank (Violet)</span></div>
+    <div class="legend mt-3 text-xs sm:text-sm">
+      <div class="legend-item"><span class="legend-dot cyan"></span><span>Pier / Dock</span></div>
+      <div class="legend-item"><span class="legend-dot violet"></span><span>Shore / Bank</span></div>
     </div>
 
     <!-- Explore header -->
     <div class="flex items-center justify-between mt-2 mb-3">
       <h3 class="text-sm font-semibold tracking-[1.5px] text-[#a0a0c0]">ALL 15 PUBLIC SPOTS</h3>
-      <span class="text-[10px] text-[#666] font-mono">TAP ANY CARD OR MARKER</span>
+      <span class="hidden sm:inline text-[10px] text-[#666] font-mono">TAP ANY CARD OR MARKER</span>
     </div>
 
     <!-- Spot cards grid -->
