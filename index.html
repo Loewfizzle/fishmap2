@@ -223,15 +223,15 @@
     /* Toast */
     .toast {
       position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 20px); max-width: calc(100% - 32px); width: 420px;
-      background: var(--bg-surface); border: 1px solid var(--accent-cyan); color: var(--text-primary); padding: 14px 18px;
-      border-radius: 12px; box-shadow: 0 10px 30px -8px rgba(0,0,0,0.7), 0 0 20px rgba(0,249,255,0.25); z-index: 9999;
+      background: #FFFFFF; border: 1px solid #7DD3FC; color: #0F172A; padding: 14px 18px;
+      border-radius: 12px; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); z-index: 9999;
       display: flex; align-items: center; gap: 12px; opacity: 0; pointer-events: none; transition: all 0.25s cubic-bezier(0.23,1,0.32,1);
     }
     .toast.visible { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
     .toast .msg { flex: 1; font-size: 14px; }
     .toast .actions { display: flex; gap: 8px; flex-shrink: 0; }
-    .toast button { font-size: 12px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--accent-cyan); background: transparent; color: var(--accent-cyan); cursor: pointer; min-height: 32px; }
-    .toast button:hover { background: rgba(0,249,255,0.1); }
+    .toast button { font-size: 12px; padding: 6px 12px; border-radius: 8px; border: 1px solid #0EA5E9; background: transparent; color: #0EA5E9; cursor: pointer; min-height: 32px; }
+    .toast button:hover { background: #E0F2FE; }
 
     /* Modal - fun and friendly (light theme, high contrast) */
     .modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.35); backdrop-filter: blur(6px); display: none; align-items: flex-end; justify-content: center; z-index: 10000; padding: 0; }
@@ -303,7 +303,7 @@
     .modal-close-text:hover { color: #0F172A; opacity: 1; }
   </style>
 </head>
-<body class="bg-[#0a0a0f] text-[#f0f0ff]">
+<body class="bg-[#F0F9FF] text-[#0F172A]">
   <div class="max-w-5xl mx-auto px-4 sm:px-6 bg-white">
     <!-- Header -->
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#7DD3FC] py-4 sm:py-5 shadow-sm">
@@ -382,14 +382,13 @@
 
     <!-- Intro for amateur anglers -->
     <div class="py-4 sm:py-6 text-center max-w-md mx-auto">
-      <p class="text-[#a0a0c0] text-sm sm:text-[15px] leading-relaxed">Quick public shore, pier &amp; dock fishing for busy anglers. All spots within 15 miles of Byron Center — no boat required.</p>
+      <p class="text-[#475569] text-sm sm:text-[15px] leading-relaxed">Quick public shore, pier &amp; dock fishing for busy anglers. All spots within 15 miles of Byron Center — no boat required.</p>
       <p class="text-[10px] sm:text-[11px] text-[#0D9488] tracking-[2px] mt-2 font-medium">TAP A MARKER OR USE NEAR ME TO START</p>
     </div>
 
     <!-- Map -->
-    <div class="relative rounded-3xl overflow-hidden bg-[#111118] p-1.5 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_20px_40px_-10px_rgba(0,0,0,0.6)] border border-white/5">
-      <div id="map" aria-label="Interactive map of 25 public fishing spots near Byron Center, Michigan"></div>
-      <div class="scanlines"></div>
+    <div class="relative rounded-3xl overflow-hidden bg-white p-1.5 shadow-[0_0_0_1px_#BAE6FD,0_10px_15px_-3px_rgb(0_0_0_/_0.1),0_4px_6px_-4px_rgb(0_0_0_/_0.1)] border border-[#7DD3FC]">
+      <div id="map" aria-label="Interactive map of 24 public fishing spots near Byron Center, Michigan"></div>
     </div>
 
     <!-- Legend -->
@@ -410,7 +409,7 @@
 
     <!-- Explore header -->
     <div class="flex items-center justify-between mt-2 mb-3">
-      <h3 id="spots-section-title" class="text-sm font-semibold tracking-[1.5px] text-[#a0a0c0]">ALL 25 PUBLIC SPOTS</h3>
+      <h3 id="spots-section-title" class="text-sm font-semibold tracking-[1.5px] text-[#a0a0c0]">ALL 24 PUBLIC SPOTS</h3>
       <span class="hidden sm:inline text-[10px] text-[#666] font-mono">TAP ANY CARD OR MARKER</span>
     </div>
 
@@ -422,6 +421,7 @@
       <div class="max-w-prose mx-auto">
         <strong class="text-[#a0a0c0]">FISHMAP</strong> • BYRON CENTER, MI • LOCAL SHORE &amp; PIER DATA<br>
         Michigan fishing license required. Data is approximate and for informational use only — always verify current conditions, hours, and regulations with local authorities or Michigan DNR before fishing. Respect private property, pack out all trash, and practice ethical angling. Not affiliated with any government entity. Use at your own risk.<br>
+        <span class="text-[#888]">Data last verified: June 2026 • Kent County Parks, city departments, and local access info</span><br>
         <span class="text-[#888]">Submit reports or suggestions via GitHub</span>
       </div>
     </footer>
@@ -498,7 +498,7 @@
 
   <script>
     // ============================================================
-    // FishMap — Professional single-file cyberpunk fishing map
+    // FishMap — Clean, professional single-file fishing map
     // Fully responsive, mobile-first, production-ready
     // ============================================================
 
@@ -507,7 +507,7 @@
     const NEAR_ME_ZOOM = 13;
     const HIGHLIGHT_DURATION_MS = 14500;
 
-    // === REAL DATA (25 public spots, validated) ===
+    // === REAL DATA (24 public spots, validated) ===
     const spotsData = [
       {"name":"Whistlestop Park Pond","lat":42.8216,"lng":-85.7189,"address":"2120 76th St SW, Byron Center, MI 49315","access_type":"dock","hours":"Dawn - Dusk (park hours)","parking":"Paved lot onsite with overflow parking on Consumers Energy corridor nearby","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch"],"description":"Easy paved path access from the main parking area circles the 2.5-acre pond with two fishing decks for comfortable casting. Beginners do great with a simple bobber and worm rig or small jigs from the decks or bank; kids and families frequently catch bluegill and pumpkinseed here. Catch-and-release only. Best in spring through fall; year-round access for shore fishing.","approx_miles":0.8},
       {"name":"Palmer Park","lat":42.8784,"lng":-85.6934,"address":"1275 52nd St SW, Wyoming, MI 49509","access_type":"shore","hours":"Dawn - Dusk (park hours)","parking":"Free paved lots with multiple access points and nearby restrooms","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch","Black Crappie"],"description":"Buck Creek winds through the park with fishing access from bridges and drier banks along the trails. Park near the main lots or trailheads and walk short distances to spots; ultralight spinning gear with worms or small spinners works well for panfish and bass. Popular local spot for relaxed 1-2 hour sessions. Good year-round bank access.","approx_miles":4.9},
@@ -531,9 +531,8 @@
       {"name":"Lamberton Lake Park","lat":42.9120,"lng":-85.6800,"address":"Lamberton Lake Park, Grand Rapids, MI 49504","access_type":"shore","hours":"Dawn - Dusk","parking":"Street parking and small lot","species":["Largemouth Bass","Bluegill","Pumpkinseed","Northern Pike"],"description":"Scenic little lake with easy bank fishing. Occasional northern pike in addition to panfish. Good variety for a short session. Nice walking path around the water.","approx_miles":7.8},
       {"name":"Paris Park","lat":42.8625,"lng":-85.5705,"address":"3213 60th St SE, Kentwood, MI 49512","access_type":"shore","hours":"Dawn - Dusk","parking":"Paved lot with trail access to nature preserve and pond areas","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch"],"description":"Peaceful nature preserve with paved paths winding through wetlands and pond areas. Excellent shore fishing in a quiet setting ideal for beginners and families.","approx_miles":8.0},
       {"name":"Chief Hazy Cloud Park","lat":42.9635,"lng":-85.4858,"address":"150 Pettis Ave NE, Ada, MI 49301","access_type":"shore","hours":"Dawn - Dusk","parking":"Small dedicated lot plus roadside parking with direct Grand River bank access","species":["Smallmouth Bass","Channel Catfish","Rock Bass","Bluegill","Northern Pike"],"description":"Nearly a mile of natural Grand River shoreline in a large wooded wetland park. Outstanding bank fishing with plenty of room to spread out and enjoy the scenery.","approx_miles":15.3},
-      {"name":"Luton Park","lat":42.9500,"lng":-85.5500,"address":"Luton Park, Kent County, MI","access_type":"shore","hours":"Dawn - Dusk","parking":"Large parking areas with easy trail and shoreline access","species":["Largemouth Bass","Bluegill","Northern Pike","Yellow Perch"],"description":"Kent County park offering good public shoreline fishing on local waters. Family-friendly with additional recreational amenities nearby.","approx_miles":12.5},
-      {"name":"Home Acres Park","lat":42.8800,"lng":-85.6100,"address":"Home Acres Park, Kentwood, MI 49508","access_type":"shore","hours":"Dawn - Dusk","parking":"Paved parking with direct path access to pond and open areas","species":["Largemouth Bass","Bluegill","Pumpkinseed"],"description":"Local neighborhood park with pond access for quick shore fishing sessions. Convenient for short visits with kids or after work.","approx_miles":7.5},
-      {"name":"Covenant Park","lat":42.8700,"lng":-85.6400,"address":"Covenant Park, Kentwood, MI 49512","access_type":"shore","hours":"Dawn - Dusk","parking":"Ample parking with paths to water features","species":["Largemouth Bass","Bluegill","Channel Catfish"],"description":"Urban park with fishing access to ponds and waterways. Great option for convenient, no-fuss shore fishing close to home.","approx_miles":6.5}
+      {"name":"Home Acres Park","lat":42.855,"lng":-85.645,"address":"145 Farnham St SE, Kentwood, MI 49548","access_type":"shore","hours":"Dawn - Dusk","parking":"Paved parking with paths to fields and water features","species":["Largemouth Bass","Bluegill","Pumpkinseed"],"description":"Kentwood park with ball fields and nearby water access suitable for casual shore fishing. Easy parking and kid-friendly environment.","approx_miles":6.8},
+      {"name":"Covenant Park","lat":42.8932,"lng":-85.5822,"address":"3724 Shaffer Ave SE, Kentwood, MI 49512","access_type":"shore","hours":"Dawn - Dusk","parking":"Paved parking with paths to pond and open green space","species":["Largemouth Bass","Bluegill","Pumpkinseed"],"description":"Kentwood neighborhood park with pond access for relaxed shore fishing. Convenient location with good parking and family amenities.","approx_miles":7.8}
     ];
 
     let map, spotMarkers = [], currentHighlightLayer = null, highlightTimeout = null, lastUserPosition = null;
@@ -745,9 +744,9 @@
       const titleEl = document.getElementById('spots-section-title');
       if (titleEl) {
         if (liveDistances && liveDistances.length > 0) {
-          titleEl.innerHTML = 'ALL 25 PUBLIC SPOTS <span class="text-[#0284C7] font-normal text-xs tracking-normal">— sorted by distance from you</span>';
+          titleEl.innerHTML = 'ALL 24 PUBLIC SPOTS <span class="text-[#0284C7] font-normal text-xs tracking-normal">— sorted by distance from you</span>';
         } else {
-          titleEl.textContent = 'ALL 25 PUBLIC SPOTS';
+          titleEl.textContent = 'ALL 24 PUBLIC SPOTS';
         }
       }
 
@@ -830,11 +829,6 @@
       currentModalSpot = spot;
 
       const isPier = isPierOrDock(spot.access_type);
-      const content = modalEl.querySelector('.modal-content');
-      if (content) {
-        content.classList.remove('cyan-neon', 'violet-neon');
-        content.classList.add(isPier ? 'cyan-neon' : 'violet-neon');
-      }
 
       const badge = document.getElementById('modal-badge');
       badge.textContent = isPier ? 'PIER / DOCK' : 'SHORE / BANK';
@@ -894,7 +888,6 @@
 
       const close = () => {
         modalEl.classList.remove('visible');
-        if (content) content.classList.remove('cyan-neon', 'violet-neon');
         document.removeEventListener('keydown', escHandler);
       };
 
@@ -946,7 +939,7 @@
       window.fishMapReset = resetMapView;
 
       // Clean prod: no console spam
-      console.log('%c[FishMap] Ready — 25 public fishing spots loaded.', 'color:#0284C7');
+      console.log('%c[FishMap] Ready — 24 public fishing spots loaded.', 'color:#0284C7');
     }
 
     if (document.readyState === 'loading') {
