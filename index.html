@@ -11,16 +11,16 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
-      /* Clean, bright, professional palette */
-      --bg-primary: #F8FAFC;
+      /* Very light, clean, professional palette */
+      --bg-primary: #FFFFFF;
       --bg-surface: #FFFFFF;
-      --bg-surface-2: #F1F5F9;
+      --bg-surface-2: #F8FAFC;
       --text-primary: #0F172A;
       --text-secondary: #475569;
       --accent: #0284C7;           /* Professional sky blue */
       --accent-secondary: #0D9488; /* Teal */
       --border: #E2E8F0;
-      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
       --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
       --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -59,7 +59,7 @@
       filter: drop-shadow(0 0 6px rgba(2, 132, 199, 0.3));
     }
 
-    /* Map container - clean professional look */
+    /* Map container - very light and clean */
     #map {
       width: 100%;
       height: min(520px, 62vh);
@@ -67,11 +67,11 @@
       border: 1px solid var(--border);
       box-shadow: var(--shadow-md);
       overflow: hidden;
-      background: #F1F5F9;
+      background: #FFFFFF;
     }
 
     .leaflet-container { 
-      background: #F1F5F9 !important; 
+      background: #FFFFFF !important; 
       font-family: inherit; 
     }
     .leaflet-control-zoom {
@@ -104,29 +104,34 @@
       text-decoration: none; 
     }
 
-    /* Custom neon markers (48px tap targets) */
+    /* Clean professional map markers (48px tap targets) */
     .neon-marker { background: transparent !important; border: none !important; }
     .marker-glow {
-      width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
-      background: rgba(10,11,16,0.92); border: 3px solid var(--neon-color); border-radius: 9999px;
-      box-shadow: 0 0 7px var(--neon-color), 0 0 14px var(--neon-color), 0 0 24px var(--neon-color), 0 0 38px var(--neon-color),
-                  inset 0 0 7px rgba(255,255,255,0.35);
-      transition: transform 0.18s cubic-bezier(0.23,1,0.32,1), box-shadow 0.18s cubic-bezier(0.23,1,0.32,1);
-      will-change: transform, box-shadow;
+      width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
+      background: #FFFFFF;
+      border: 3px solid var(--accent);
+      border-radius: 9999px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
-    .marker-glow:hover, .neon-marker:hover .marker-glow { transform: scale(1.18); }
-    .marker-inner { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; color: var(--neon-color); filter: drop-shadow(0 0 3px currentColor); }
+    .marker-glow:hover, .neon-marker:hover .marker-glow { 
+      transform: scale(1.1); 
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .marker-inner { 
+      width: 18px; height: 18px; 
+      display: flex; align-items: center; justify-content: center; 
+      color: var(--accent); 
+    }
 
-    /* Halo + pulse for Near Me */
+    /* Subtle highlight for Near Me (no heavy glow) */
     .neon-halo { background: transparent !important; border: none !important; pointer-events: none !important; }
     .halo-inner {
-      width: 64px; height: 64px; border-radius: 9999px; border: 3px solid var(--neon-color);
-      box-shadow: 0 0 14px var(--neon-color), 0 0 28px var(--neon-color), 0 0 44px var(--neon-color);
-      opacity: 0.55; animation: neon-halo-pulse 1.65s ease-in-out infinite; will-change: transform, opacity;
+      width: 56px; height: 56px; border-radius: 9999px; 
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.15);
+      opacity: 0.7;
     }
-    @keyframes neon-halo-pulse { 0%,100% { transform: scale(0.82); opacity: 0.45; } 50% { transform: scale(1.18); opacity: 0.78; } }
-    .neon-marker .marker-glow.pulse-highlight { animation: marker-real-pulse 1.4s ease-in-out 3; box-shadow: 0 0 14px var(--neon-color), 0 0 26px var(--neon-color), 0 0 40px var(--neon-color), 0 0 56px var(--neon-color), inset 0 0 10px rgba(255,255,255,0.6) !important; }
-    @keyframes marker-real-pulse { 0%,100% { transform: scale(1); } 40%,60% { transform: scale(1.32); } }
 
     .legend { display: flex; gap: 16px; margin: -4px 0 12px; flex-wrap: wrap; }
     .legend-item { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); }
@@ -837,7 +842,7 @@
         bounceAtZoomLimits: true, wheelPxPerZoomLevel: 90, zoomSnap: 0.25, zoomDelta: 0.5
       });
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; OpenStreetMap &amp; contributors &copy; CARTO',
         subdomains: 'abcd', maxZoom: 19, minZoom: 8
       }).addTo(map);
