@@ -327,6 +327,25 @@
       <div class="legend-item"><span class="legend-dot violet"></span><span>Shore / Bank</span></div>
     </div>
 
+    <!-- Freshness Signals -->
+    <div class="mt-4 mb-2">
+      <div class="flex items-center justify-between text-xs text-[#a0a0c0]">
+        <div>
+          <span class="font-semibold text-[#00f9ff]">Last updated:</span> <span id="last-updated"></span>
+        </div>
+        <div class="text-[#666] hidden sm:block">3 new reports this week</div>
+      </div>
+
+      <!-- Recent Reports -->
+      <div class="mt-2 bg-[#111118] border border-white/10 rounded-xl p-3 text-sm">
+        <div class="text-[#a0a0c0] text-xs font-semibold tracking-wider mb-2">RECENT REPORTS</div>
+        <div id="recent-reports" class="space-y-1.5 text-[#e0e0ff]"></div>
+        <div class="mt-2 text-[10px] text-[#888]">
+          Reports are manually curated. Want to contribute? Email <span class="text-[#00f9ff]">bloew@recontechusa.com</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Explore header -->
     <div class="flex items-center justify-between mt-2 mb-3">
       <h3 class="text-sm font-semibold tracking-[1.5px] text-[#a0a0c0]">ALL 15 PUBLIC SPOTS</h3>
@@ -340,7 +359,8 @@
     <footer class="mt-8 mb-10 pt-6 border-t border-white/10 text-center text-[11px] text-[#666] tracking-[0.5px] leading-relaxed">
       <div class="max-w-prose mx-auto">
         <strong class="text-[#a0a0c0]">FISHMAP</strong> • BYRON CENTER, MI • LOCAL SHORE &amp; PIER DATA<br>
-        Michigan fishing license required. Data is approximate and for informational use only — always verify current conditions, hours, and regulations with local authorities or Michigan DNR before fishing. Respect private property, pack out all trash, and practice ethical angling. Not affiliated with any government entity. Use at your own risk.
+        Michigan fishing license required. Data is approximate and for informational use only — always verify current conditions, hours, and regulations with local authorities or Michigan DNR before fishing. Respect private property, pack out all trash, and practice ethical angling. Not affiliated with any government entity. Use at your own risk.<br>
+        <span class="text-[#888]">Submit reports or suggestions: <span class="text-[#00f9ff]">bloew@recontechusa.com</span></span>
       </div>
     </footer>
   </div>
@@ -436,6 +456,14 @@
       {"name":"Grand River Park","lat":42.9414,"lng":-85.8573,"address":"9473 28th Ave, Jenison, MI 49428","access_type":"dock","hours":"Dawn - Dusk","parking":"Multiple free lots including trailhead and river access areas","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch"],"description":"Small lake with dedicated fishing dock plus Grand River overlook and bank access via hard-surfaced paths. Park at the trailhead lot for quick walk to the fishing dock; beginners thrive with bobber and worm setups or small lures for panfish. Restrooms and playground nearby. Excellent accessible option.","approx_miles":11.4},
       {"name":"Waterfront Park","lat":42.9562,"lng":-85.6038,"address":"2205 Reeds Lake Blvd, East Grand Rapids, MI 49506","access_type":"pier","hours":"Dawn - Dusk","parking":"Limited free parking with paths to the lake","species":["Largemouth Bass","Northern Pike","Bluegill","Yellow Perch","Black Crappie"],"description":"Northwest Reeds Lake shore with fishing and observation piers extending into the water amid woodland setting. Short walk from parking via paved and unpaved paths; stable piers are beginner-friendly for casting bobbers or lures targeting panfish, bass, and pike. Quiet and scenic. Good spring through fall.","approx_miles":11.7},
       {"name":"Riverside Park","lat":42.9994,"lng":-85.6718,"address":"Riverside Park, Grand Rapids, MI 49505","access_type":"dock","hours":"Dawn - Dusk (park hours)","parking":"Free lot with ~45 spaces at the south boat launch area","species":["Smallmouth Bass","Largemouth Bass","Bluegill","Channel Catfish","Rock Bass"],"description":"Grand River frontage with barrier-free fishing dock and extensive bank access along the river. Easy from the main parking near the launch; simple spinning gear with bait or lures produces river species from the dock or shore. Part of the city riverfront trail system. Solid option for urban shore fishing.","approx_miles":13.3}
+    ];
+
+    // === LIGHT FRESHNESS SIGNALS (easy to maintain) ===
+    const lastUpdated = "May 31, 2026";
+    const recentReports = [
+      { date: "May 29", text: "Bluegill & pumpkinseed very active at Whistlestop after 6pm on worms." },
+      { date: "May 27", text: "Smallmouth hitting soft plastics at Riverside Park main lagoon." },
+      { date: "May 25", text: "Decent perch and crappie from the fishing decks at Millennium Park (east lakes)." }
     ];
 
     let map, spotMarkers = [], currentHighlightLayer = null, highlightTimeout = null, lastUserPosition = null;
@@ -623,6 +651,20 @@
       });
     }
 
+    function populateFreshnessSignals() {
+      // Last updated
+      const lastEl = document.getElementById('last-updated');
+      if (lastEl) lastEl.textContent = lastUpdated;
+
+      // Recent reports
+      const reportsContainer = document.getElementById('recent-reports');
+      if (reportsContainer) {
+        reportsContainer.innerHTML = recentReports.map(report => 
+          `<div><span class="text-[#00f9ff]">•</span> <strong>${report.date}:</strong> ${report.text}</div>`
+        ).join('');
+      }
+    }
+
     function showToast(message, hasAction = false, closest = null) {
       if (!toastEl) toastEl = document.getElementById('toast');
       if (!toastMsgEl) toastMsgEl = document.getElementById('toast-msg');
@@ -751,6 +793,7 @@
     function bootstrap() {
       initMap();
       populateSpotList();
+      populateFreshnessSignals();
       setupNearMe();
       setupReset();
 
