@@ -388,7 +388,7 @@
 
     <!-- Map -->
     <div class="relative rounded-3xl overflow-hidden bg-[#111118] p-1.5 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_20px_40px_-10px_rgba(0,0,0,0.6)] border border-white/5">
-      <div id="map" aria-label="Interactive map of 15 public fishing spots near Byron Center, Michigan"></div>
+      <div id="map" aria-label="Interactive map of 25 public fishing spots near Byron Center, Michigan"></div>
       <div class="scanlines"></div>
     </div>
 
@@ -410,7 +410,7 @@
 
     <!-- Explore header -->
     <div class="flex items-center justify-between mt-2 mb-3">
-      <h3 id="spots-section-title" class="text-sm font-semibold tracking-[1.5px] text-[#a0a0c0]">ALL 20 PUBLIC SPOTS</h3>
+      <h3 id="spots-section-title" class="text-sm font-semibold tracking-[1.5px] text-[#a0a0c0]">ALL 25 PUBLIC SPOTS</h3>
       <span class="hidden sm:inline text-[10px] text-[#666] font-mono">TAP ANY CARD OR MARKER</span>
     </div>
 
@@ -507,7 +507,7 @@
     const NEAR_ME_ZOOM = 13;
     const HIGHLIGHT_DURATION_MS = 14500;
 
-    // === REAL DATA (20 public spots, validated) ===
+    // === REAL DATA (25 public spots, validated) ===
     const spotsData = [
       {"name":"Whistlestop Park Pond","lat":42.8216,"lng":-85.7189,"address":"2120 76th St SW, Byron Center, MI 49315","access_type":"dock","hours":"Dawn - Dusk (park hours)","parking":"Paved lot onsite with overflow parking on Consumers Energy corridor nearby","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch"],"description":"Easy paved path access from the main parking area circles the 2.5-acre pond with two fishing decks for comfortable casting. Beginners do great with a simple bobber and worm rig or small jigs from the decks or bank; kids and families frequently catch bluegill and pumpkinseed here. Catch-and-release only. Best in spring through fall; year-round access for shore fishing.","approx_miles":0.8},
       {"name":"Palmer Park","lat":42.8784,"lng":-85.6934,"address":"1275 52nd St SW, Wyoming, MI 49509","access_type":"shore","hours":"Dawn - Dusk (park hours)","parking":"Free paved lots with multiple access points and nearby restrooms","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch","Black Crappie"],"description":"Buck Creek winds through the park with fishing access from bridges and drier banks along the trails. Park near the main lots or trailheads and walk short distances to spots; ultralight spinning gear with worms or small spinners works well for panfish and bass. Popular local spot for relaxed 1-2 hour sessions. Good year-round bank access.","approx_miles":4.9},
@@ -528,7 +528,12 @@
       {"name":"Ada Township River Access","lat":42.9540,"lng":-85.4880,"address":"Near 8450 E Fulton St, Ada, MI 49301","access_type":"shore","hours":"Dawn - Dusk","parking":"Small gravel lot and roadside parking","species":["Smallmouth Bass","Largemouth Bass","Rock Bass","Channel Catfish"],"description":"Nice stretch of the Grand River with easy bank access. Wading possible in lower water. Good for river smallmouth on spinners or live bait. Quiet spot good for a relaxed session.","approx_miles":14.1},
       {"name":"Pinewood Park Pond","lat":42.8805,"lng":-85.6200,"address":"Pinewood Park, Kentwood, MI 49508","access_type":"shore","hours":"Dawn - Dusk","parking":"Free lot near the park entrance","species":["Largemouth Bass","Bluegill","Pumpkinseed"],"description":"Small urban pond with easy shore access from the park paths. Perfect for quick 45-90 minute trips with kids. Simple bobber fishing produces consistent bluegill and bass.","approx_miles":6.2},
       {"name":"Pickerel Lake Access","lat":42.8375,"lng":-85.4920,"address":"Pickerel Lake Public Access, 14000 84th St SE, Alto, MI 49302","access_type":"shore","hours":"Dawn - Dusk","parking":"Small gravel lot","species":["Largemouth Bass","Bluegill","Yellow Perch","Black Crappie"],"description":"Quiet lake with good shoreline access. Perch and crappie often cooperative. Great spot for ultralight gear and bobber fishing. Less crowded than bigger lakes.","approx_miles":13.5},
-      {"name":"Lamberton Lake Park","lat":42.9120,"lng":-85.6800,"address":"Lamberton Lake Park, Grand Rapids, MI 49504","access_type":"shore","hours":"Dawn - Dusk","parking":"Street parking and small lot","species":["Largemouth Bass","Bluegill","Pumpkinseed","Northern Pike"],"description":"Scenic little lake with easy bank fishing. Occasional northern pike in addition to panfish. Good variety for a short session. Nice walking path around the water.","approx_miles":7.8}
+      {"name":"Lamberton Lake Park","lat":42.9120,"lng":-85.6800,"address":"Lamberton Lake Park, Grand Rapids, MI 49504","access_type":"shore","hours":"Dawn - Dusk","parking":"Street parking and small lot","species":["Largemouth Bass","Bluegill","Pumpkinseed","Northern Pike"],"description":"Scenic little lake with easy bank fishing. Occasional northern pike in addition to panfish. Good variety for a short session. Nice walking path around the water.","approx_miles":7.8},
+      {"name":"Paris Park","lat":42.8625,"lng":-85.5705,"address":"3213 60th St SE, Kentwood, MI 49512","access_type":"shore","hours":"Dawn - Dusk","parking":"Paved lot with trail access to nature preserve and pond areas","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch"],"description":"Peaceful nature preserve with paved paths winding through wetlands and pond areas. Excellent shore fishing in a quiet setting ideal for beginners and families.","approx_miles":8.0},
+      {"name":"Chief Hazy Cloud Park","lat":42.9635,"lng":-85.4858,"address":"150 Pettis Ave NE, Ada, MI 49301","access_type":"shore","hours":"Dawn - Dusk","parking":"Small dedicated lot plus roadside parking with direct Grand River bank access","species":["Smallmouth Bass","Channel Catfish","Rock Bass","Bluegill","Northern Pike"],"description":"Nearly a mile of natural Grand River shoreline in a large wooded wetland park. Outstanding bank fishing with plenty of room to spread out and enjoy the scenery.","approx_miles":15.3},
+      {"name":"Luton Park","lat":42.9500,"lng":-85.5500,"address":"Luton Park, Kent County, MI","access_type":"shore","hours":"Dawn - Dusk","parking":"Large parking areas with easy trail and shoreline access","species":["Largemouth Bass","Bluegill","Northern Pike","Yellow Perch"],"description":"Kent County park offering good public shoreline fishing on local waters. Family-friendly with additional recreational amenities nearby.","approx_miles":12.5},
+      {"name":"Home Acres Park","lat":42.8800,"lng":-85.6100,"address":"Home Acres Park, Kentwood, MI 49508","access_type":"shore","hours":"Dawn - Dusk","parking":"Paved parking with direct path access to pond and open areas","species":["Largemouth Bass","Bluegill","Pumpkinseed"],"description":"Local neighborhood park with pond access for quick shore fishing sessions. Convenient for short visits with kids or after work.","approx_miles":7.5},
+      {"name":"Covenant Park","lat":42.8700,"lng":-85.6400,"address":"Covenant Park, Kentwood, MI 49512","access_type":"shore","hours":"Dawn - Dusk","parking":"Ample parking with paths to water features","species":["Largemouth Bass","Bluegill","Channel Catfish"],"description":"Urban park with fishing access to ponds and waterways. Great option for convenient, no-fuss shore fishing close to home.","approx_miles":6.5}
     ];
 
     let map, spotMarkers = [], currentHighlightLayer = null, highlightTimeout = null, lastUserPosition = null;
@@ -740,9 +745,9 @@
       const titleEl = document.getElementById('spots-section-title');
       if (titleEl) {
         if (liveDistances && liveDistances.length > 0) {
-          titleEl.innerHTML = 'ALL 20 PUBLIC SPOTS <span class="text-[#0284C7] font-normal text-xs tracking-normal">— sorted by distance from you</span>';
+          titleEl.innerHTML = 'ALL 25 PUBLIC SPOTS <span class="text-[#0284C7] font-normal text-xs tracking-normal">— sorted by distance from you</span>';
         } else {
-          titleEl.textContent = 'ALL 20 PUBLIC SPOTS';
+          titleEl.textContent = 'ALL 25 PUBLIC SPOTS';
         }
       }
 
