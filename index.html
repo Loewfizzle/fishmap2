@@ -663,7 +663,16 @@
 
     function resetMapView() {
       clearHighlights();
-      if (map) map.flyTo(DEFAULT_CENTER, DEFAULT_ZOOM, { duration: 0.7 });
+
+      // Fit map to show all markers (same as initial load)
+      if (map && spotMarkers.length > 0) {
+        const allMarkers = spotMarkers.map(item => item.marker);
+        const group = L.featureGroup(allMarkers);
+        map.flyToBounds(group.getBounds(), { duration: 0.7, padding: [30, 30], maxZoom: 12 });
+      } else if (map) {
+        map.flyTo(DEFAULT_CENTER, DEFAULT_ZOOM, { duration: 0.7 });
+      }
+
       // Revert distance labels
       document.querySelectorAll('#spots-grid .spot-card .dist').forEach(el => {
         const card = el.closest('.spot-card');
@@ -829,8 +838,17 @@
         subdomains: 'abcd', maxZoom: 19, minZoom: 8
       }).addTo(map);
 
-      map.setView(DEFAULT_CENTER, DEFAULT_ZOOM);
       addMarkers();
+
+      // Fit map to show all markers
+      const allMarkers = spotMarkers.map(item => item.marker);
+      if (allMarkers.length > 0) {
+        const group = L.featureGroup(allMarkers);
+        map.fitBounds(group.getBounds(), { padding: [30, 30], maxZoom: 12 });
+      } else {
+        map.setView(DEFAULT_CENTER, DEFAULT_ZOOM);
+      }
+
       mapEl.style.touchAction = 'manipulation';
     }
 
@@ -846,7 +864,7 @@
       window.fishMapReset = resetMapView;
 
       // Clean prod: no console spam
-      console.log('%c[FishMap] Ready — 15 public fishing spots loaded.', 'color:#00f9ff');
+      console.log('%c[FishMap] Ready — 25 public fishing spots loaded.', 'color:#00f9ff');
     }
 
     if (document.readyState === 'loading') {
