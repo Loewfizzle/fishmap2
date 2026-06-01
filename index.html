@@ -27,7 +27,7 @@
 
     html, body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-primary);
+      background-color: #FFFFFF;
       color: var(--text-primary);
       -webkit-font-smoothing: antialiased;
       touch-action: manipulation;
@@ -54,9 +54,9 @@
       }
     }
 
-    /* Radar logo - adapted to professional theme */
+    /* Radar logo - clean professional */
     .radar-logo {
-      filter: drop-shadow(0 0 6px rgba(2, 132, 199, 0.3));
+      filter: drop-shadow(0 0 4px rgba(2, 132, 199, 0.2));
     }
 
     /* Map container - very light and clean */
@@ -316,14 +316,14 @@
   </style>
 </head>
 <body class="bg-[#0a0a0f] text-[#f0f0ff]">
-  <div class="max-w-5xl mx-auto px-4 sm:px-6">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 bg-white">
     <!-- Header -->
-    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-[var(--border)] py-3 sm:py-4 shadow-sm">
-      <div class="flex items-center justify-between gap-2 sm:gap-4 min-w-0">
+    <header class="sticky top-0 z-50 bg-white border-b border-[var(--border)] py-4 sm:py-5">
+      <div class="flex items-center justify-between gap-3 sm:gap-4 min-w-0">
         <div class="flex items-center gap-x-3 min-w-0">
-          <!-- Animated Submarine Radar Logo - enhanced container for stronger cyberpunk presence -->
-          <div class="relative flex-shrink-0 p-0.5 sm:p-1 rounded-full bg-[#0a0a0f] ring-1 ring-[#0284C7]/30 shadow-[0_0_20px_rgba(0,249,255,0.25)]">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="radar-logo w-9 h-9 sm:w-11 sm:h-11 drop-shadow-[0_0_12px_#0284C7]" aria-label="FishMap Radar Logo">
+          <!-- Animated Submarine Radar Logo -->
+          <div class="relative flex-shrink-0 p-1">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="radar-logo w-10 h-10 sm:w-11 sm:h-11" aria-label="FishMap Radar Logo">
             <style>
               .radar-logo .pulse-ring { animation: radar-pulse 2.2s ease-in-out infinite alternate; }
               @keyframes radar-pulse { from { opacity: 0.4; } to { opacity: 0.82; } }
@@ -362,7 +362,7 @@
             <!-- Submarine / periscope central icon -->
             <line x1="38" y1="52" x2="62" y2="52" stroke="#0284C7" stroke-width="2.8" stroke-linecap="round" opacity="0.7" filter="url(#glow-cyan)"/>
             <line x1="50" y1="50" x2="50" y2="34" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round" filter="url(#glow-cyan)"/>
-            <circle cx="50" cy="31" r="3.8" fill="#0a0a0f" stroke="#0D9488" stroke-width="1.8" filter="url(#glow-magenta)"/>
+            <circle cx="50" cy="31" r="3.8" fill="#FFFFFF" stroke="#0D9488" stroke-width="1.8"/>
             <circle cx="50" cy="29.5" r="1.3" fill="#0D9488" opacity="0.9"/>
             <circle cx="50" cy="50" r="2.8" fill="#0284C7" filter="url(#glow-cyan)"/>
             <!-- Rotating sweep -->
@@ -375,8 +375,8 @@
           </svg>
           </div>
           <div class="min-w-0">
-            <h1 class="text-2xl sm:text-4xl font-bold tracking-[0.06em] text-white neon-text-cyan leading-none">FishMap</h1>
-            <p class="text-[9px] sm:text-xs tracking-[2.8px] text-[#0D9488] font-medium mt-0.5">SHORE • PIER • DOCK • BYRON CENTER, MI</p>
+            <h1 class="text-2xl sm:text-4xl font-bold tracking-[0.02em] text-[#0F172A] leading-none">FishMap</h1>
+            <p class="text-[10px] sm:text-xs tracking-[1.5px] text-[#64748B] font-medium mt-0.5">SHORE • PIER • DOCK • BYRON CENTER, MI</p>
           </div>
         </div>
         <div class="flex items-center gap-1.5 sm:gap-2">
