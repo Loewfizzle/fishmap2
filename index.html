@@ -396,25 +396,6 @@
       <div class="legend-item"><span class="legend-dot violet"></span><span>Shore / Bank</span></div>
     </div>
 
-    <!-- Freshness Signals -->
-    <div class="mt-4 mb-2">
-      <div class="flex items-center justify-between text-xs text-[#a0a0c0]">
-        <div>
-          <span class="font-semibold text-[#00f9ff]">Last updated:</span> <span id="last-updated"></span>
-        </div>
-        <div class="text-[#666] hidden sm:block">4 new reports this month</div>
-      </div>
-
-      <!-- Recent Reports -->
-      <div class="mt-2 bg-[#111118] border border-white/10 rounded-xl p-3 text-sm">
-        <div class="text-[#a0a0c0] text-xs font-semibold tracking-wider mb-2">RECENT REPORTS</div>
-        <div id="recent-reports" class="space-y-1.5 text-[#e0e0ff]"></div>
-        <div class="mt-2 text-[10px] text-[#888]">
-          Reports are manually curated.
-        </div>
-      </div>
-    </div>
-
     <!-- Explore header -->
     <div class="flex items-center justify-between mt-2 mb-3">
       <h3 class="text-sm font-semibold tracking-[1.5px] text-[#a0a0c0]">ALL 20 PUBLIC SPOTS</h3>
@@ -536,14 +517,6 @@
       {"name":"Pinewood Park Pond","lat":42.8805,"lng":-85.6200,"address":"Pinewood Park, Kentwood, MI 49508","access_type":"shore","hours":"Dawn - Dusk","parking":"Free lot near the park entrance","species":["Largemouth Bass","Bluegill","Pumpkinseed"],"description":"Small urban pond with easy shore access from the park paths. Perfect for quick 45-90 minute trips with kids. Simple bobber fishing produces consistent bluegill and bass.","approx_miles":6.2},
       {"name":"Pickerel Lake Access","lat":42.8450,"lng":-85.4850,"address":"Pickerel Lake Public Access, Kent County, MI","access_type":"shore","hours":"Dawn - Dusk","parking":"Small gravel lot","species":["Largemouth Bass","Bluegill","Yellow Perch","Black Crappie"],"description":"Quiet lake with good shoreline access. Perch and crappie often cooperative. Great spot for ultralight gear and bobber fishing. Less crowded than bigger lakes.","approx_miles":13.5},
       {"name":"Lamberton Lake Park","lat":42.9120,"lng":-85.6800,"address":"Lamberton Lake Park, Grand Rapids, MI 49504","access_type":"shore","hours":"Dawn - Dusk","parking":"Street parking and small lot","species":["Largemouth Bass","Bluegill","Pumpkinseed","Northern Pike"],"description":"Scenic little lake with easy bank fishing. Occasional northern pike in addition to panfish. Good variety for a short session. Nice walking path around the water.","approx_miles":7.8}
-    ];
-
-    // === LIGHT FRESHNESS SIGNALS (easy to maintain) ===
-    const lastUpdated = "May 31, 2026";
-    const recentReports = [
-      { date: "May 29", text: "Bluegill & pumpkinseed very active at Whistlestop after 6pm on worms." },
-      { date: "May 27", text: "Smallmouth hitting soft plastics at Riverside Park main lagoon." },
-      { date: "May 25", text: "Decent perch and crappie from the fishing decks at Millennium Park (east lakes)." }
     ];
 
     let map, spotMarkers = [], currentHighlightLayer = null, highlightTimeout = null, lastUserPosition = null;
@@ -731,20 +704,6 @@
       });
     }
 
-    function populateFreshnessSignals() {
-      // Last updated
-      const lastEl = document.getElementById('last-updated');
-      if (lastEl) lastEl.textContent = lastUpdated;
-
-      // Recent reports
-      const reportsContainer = document.getElementById('recent-reports');
-      if (reportsContainer) {
-        reportsContainer.innerHTML = recentReports.map(report => 
-          `<div><span class="text-[#00f9ff]">•</span> <strong>${report.date}:</strong> ${report.text}</div>`
-        ).join('');
-      }
-    }
-
     function showToast(message, hasAction = false, closest = null) {
       if (!toastEl) toastEl = document.getElementById('toast');
       if (!toastMsgEl) toastMsgEl = document.getElementById('toast-msg');
@@ -873,7 +832,6 @@
     function bootstrap() {
       initMap();
       populateSpotList();
-      populateFreshnessSignals();
       setupNearMe();
       setupReset();
 

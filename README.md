@@ -12,7 +12,7 @@ A beautiful, mobile-first single-file web app for finding quick public fishing a
   - Cyan = Pier / Dock
   - Violet = Shore / Bank access
 - "Near Me" geolocation that highlights the closest spots
-- **Light freshness signals** — "Last updated" date + recent angler reports (easy to maintain manually)
+
 - Detailed spot modals with:
   - Address, hours, parking info
   - Target species tags
