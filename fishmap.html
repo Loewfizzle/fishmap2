@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FishMap • Public shore, pier &amp; dock fishing spots within 15 miles of Byron Center, MI. Quick 1-2 hour options for amateur anglers.">
+  <title>FishMap • Shore • Pier • Dock • Byron Center, MI</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-surface: #111118;
+      --bg-surface-2: #16161f;
+      --text-primary: #f0f0ff;
+      --text-secondary: #a0a0c0;
+      --accent-cyan: #00f9ff;
+      --accent-magenta: #ff00aa;
+      --accent-violet: #c026ff;
+      --neon-cyan: 0 0 6px #00f9ff, 0 0 18px #00f9ff, 0 0 32px rgba(0,249,255,0.35);
+      --neon-violet: 0 0 6px #c026ff, 0 0 16px #c026ff, 0 0 28px rgba(192,38,255,0.3);
+      --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html, body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      touch-action: manipulation;
+    }
+
+    .cyber-heading {
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .neon-text-cyan {
+      color: var(--accent-cyan);
+      text-shadow: 0 0 4px #00f9ff, 0 0 10px #00f9ff;
+    }
+
+    .neon-text-violet {
+      color: var(--accent-violet);
+      text-shadow: 0 0 4px #c026ff, 0 0 10px #c026ff;
+    }
+
+    .neon-text-magenta {
+      color: var(--accent-magenta);
+      text-shadow: 0 0 4px #ff00aa, 0 0 9px #ff00aa;
+    }
+
+    .scanlines {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 3px,
+        rgba(255,255,255,0.022) 3px,
+        rgba(255,255,255,0.022) 4px
+      );
+      pointer-events: none;
+      z-index: 1;
+      border-radius: inherit;
+    }
+
+    .focus-neon:focus-visible {
+      outline: none;
+      box-shadow: var(--neon-cyan), 0 0 0 3px rgba(0,249,255,0.18);
+    }
+
+    .btn, .card, .modal-panel, .tag, .badge {
+      transition: transform var(--transition-fast), 
+                  box-shadow var(--transition-fast), 
+                  border-color var(--transition-fast),
+                  background-color var(--transition-fast),
+                  opacity var(--transition-fast);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .radar-logo *, .sweep, .pulse-ring, .btn, .card, .modal-panel, .tag, .badge {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+      }
+
+    /* Extra visual pop for the radar logo in header */
+    .radar-logo {
+      filter: drop-shadow(0 0 8px #00f9ff) drop-shadow(0 0 16px rgba(0,249,255,0.4));
+    }
+    }
+
+    /* Map & Leaflet cyber overrides */
+    #map {
+      width: 100%;
+      height: min(520px, 62vh);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 0 0 1px rgba(0,249,255,0.06), 0 20px 40px -10px rgba(0,0,0,0.6);
+      overflow: hidden;
+      background: #0b0b12;
+    }
+
+    .leaflet-container { background: #0b0b12 !important; font-family: inherit; }
+    .leaflet-control-zoom {
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(0,249,255,0.3), 0 4px 12px rgba(0,0,0,0.5) !important;
+      border-radius: 10px !important; overflow: hidden;
+    }
+    .leaflet-control-zoom a {
+      background-color: rgba(17,17,24,0.95) !important;
+      color: var(--accent-cyan) !important;
+      border: 1px solid rgba(0,249,255,0.35) !important;
+      font-weight: 700; width: 36px; height: 36px; line-height: 34px; font-size: 18px;
+      text-shadow: 0 0 6px var(--accent-cyan);
+    }
+    .leaflet-control-zoom a:hover { background-color: rgba(0,249,255,0.12) !important; color: #fff !important; }
+    .leaflet-control-attribution {
+      background: rgba(10,10,15,0.75) !important; color: #667 !important; font-size: 10px !important;
+      padding: 2px 6px !important; border-radius: 4px; border: 1px solid rgba(255,255,255,0.06);
+    }
+    .leaflet-control-attribution a { color: var(--accent-cyan) !important; text-decoration: none; }
+
+    /* Custom neon markers (48px tap targets) */
+    .neon-marker { background: transparent !important; border: none !important; }
+    .marker-glow {
+      width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+      background: rgba(10,11,16,0.92); border: 3px solid var(--neon-color); border-radius: 9999px;
+      box-shadow: 0 0 7px var(--neon-color), 0 0 14px var(--neon-color), 0 0 24px var(--neon-color), 0 0 38px var(--neon-color),
+                  inset 0 0 7px rgba(255,255,255,0.35);
+      transition: transform 0.18s cubic-bezier(0.23,1,0.32,1), box-shadow 0.18s cubic-bezier(0.23,1,0.32,1);
+      will-change: transform, box-shadow;
+    }
+    .marker-glow:hover, .neon-marker:hover .marker-glow { transform: scale(1.18); }
+    .marker-inner { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; color: var(--neon-color); filter: drop-shadow(0 0 3px currentColor); }
+
+    /* Halo + pulse for Near Me */
+    .neon-halo { background: transparent !important; border: none !important; pointer-events: none !important; }
+    .halo-inner {
+      width: 64px; height: 64px; border-radius: 9999px; border: 3px solid var(--neon-color);
+      box-shadow: 0 0 14px var(--neon-color), 0 0 28px var(--neon-color), 0 0 44px var(--neon-color);
+      opacity: 0.55; animation: neon-halo-pulse 1.65s ease-in-out infinite; will-change: transform, opacity;
+    }
+    @keyframes neon-halo-pulse { 0%,100% { transform: scale(0.82); opacity: 0.45; } 50% { transform: scale(1.18); opacity: 0.78; } }
+    .neon-marker .marker-glow.pulse-highlight { animation: marker-real-pulse 1.4s ease-in-out 3; box-shadow: 0 0 14px var(--neon-color), 0 0 26px var(--neon-color), 0 0 40px var(--neon-color), 0 0 56px var(--neon-color), inset 0 0 10px rgba(255,255,255,0.6) !important; }
+    @keyframes marker-real-pulse { 0%,100% { transform: scale(1); } 40%,60% { transform: scale(1.32); } }
+
+    .legend { display: flex; gap: 16px; margin: -4px 0 12px; flex-wrap: wrap; }
+    .legend-item { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); }
+    .legend-dot { width: 18px; height: 18px; border-radius: 9999px; border: 2px solid; box-shadow: 0 0 8px currentColor; }
+    .legend-dot.cyan { border-color: var(--accent-cyan); background: rgba(0,249,255,0.15); color: var(--accent-cyan); }
+    .legend-dot.violet { border-color: var(--accent-violet); background: rgba(192,38,255,0.15); color: var(--accent-violet); }
+
+    /* Spot cards */
+    #spots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin: 12px 0 32px; }
+    .spot-card {
+      background: var(--bg-surface); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 14px;
+      cursor: pointer; display: flex; flex-direction: column; gap: 8px; min-height: 148px;
+    }
+    .spot-card:hover { border-color: var(--accent-cyan); transform: translateY(-2px); box-shadow: 0 10px 20px -4px rgba(0,0,0,0.4); }
+    .spot-card.near-highlight { border-color: var(--accent-cyan); box-shadow: 0 0 0 1px var(--accent-cyan), 0 0 16px rgba(0,249,255,0.35); animation: card-near-pulse 1.2s ease-out 2; }
+    @keyframes card-near-pulse { 0% { box-shadow: 0 0 0 1px var(--accent-cyan), 0 0 16px rgba(0,249,255,0.35); } 50% { box-shadow: 0 0 0 3px var(--accent-cyan), 0 0 28px rgba(0,249,255,0.6); } 100% { box-shadow: 0 0 0 1px var(--accent-cyan), 0 0 16px rgba(0,249,255,0.35); } }
+    .spot-card .badge { align-self: flex-start; font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 9999px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .spot-card .badge.pier { background: rgba(0,249,255,0.15); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
+    .spot-card .badge.shore { background: rgba(192,38,255,0.15); color: var(--accent-violet); border: 1px solid var(--accent-violet); }
+    .spot-card h4 { margin: 0; font-size: 15px; font-weight: 700; line-height: 1.2; }
+    .spot-card .meta { font-size: 12px; color: var(--text-secondary); margin: 0; }
+    .spot-card .species { display: flex; flex-wrap: wrap; gap: 4px; margin-top: auto; }
+    .species-pill { font-size: 10px; padding: 1px 7px; border-radius: 999px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--text-secondary); white-space: nowrap; }
+    .spot-card .dist { font-size: 11px; font-weight: 600; color: var(--accent-cyan); margin-top: 4px; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 20px); max-width: calc(100% - 32px); width: 420px;
+      background: var(--bg-surface); border: 1px solid var(--accent-cyan); color: var(--text-primary); padding: 14px 18px;
+      border-radius: 12px; box-shadow: 0 10px 30px -8px rgba(0,0,0,0.7), 0 0 20px rgba(0,249,255,0.25); z-index: 9999;
+      display: flex; align-items: center; gap: 12px; opacity: 0; pointer-events: none; transition: all 0.25s cubic-bezier(0.23,1,0.32,1);
+    }
+    .toast.visible { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+    .toast .msg { flex: 1; font-size: 14px; }
+    .toast .actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .toast button { font-size: 12px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--accent-cyan); background: transparent; color: var(--accent-cyan); cursor: pointer; min-height: 32px; }
+    .toast button:hover { background: rgba(0,249,255,0.1); }
+
+    /* Modal - premium cyberpunk bottom sheet / centered */
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.82); backdrop-filter: blur(8px); display: none; align-items: flex-end; justify-content: center; z-index: 10000; padding: 0; }
+    .modal.visible { display: flex; }
+    .modal-content {
+      background: var(--bg-surface-2); width: 100%; max-width: 520px; max-height: 92vh; border-radius: 20px 20px 0 0;
+      border: 1px solid var(--accent-cyan); box-shadow: 0 -10px 40px -10px rgba(0,0,0,0.8), 0 0 30px rgba(0,249,255,0.15);
+      overflow: hidden; display: flex; flex-direction: column; position: relative;
+    }
+    .modal-content.violet-neon { border-color: var(--accent-violet); box-shadow: 0 -10px 40px -10px rgba(0,0,0,0.8), 0 0 30px rgba(192,38,255,0.2); }
+    .modal-content::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(255,255,255,0.018) 3px, rgba(255,255,255,0.018) 4px); pointer-events: none; z-index: 0; border-radius: inherit; }
+    @media (min-width: 640px) {
+      .modal { align-items: center; padding: 20px; }
+      .modal-content { border-radius: 18px; max-height: 86vh; }
+    }
+    .modal-header { padding: 18px 20px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between; gap: 12px; position: relative; z-index: 1; }
+    .modal-header .badge { font-size: 11px; padding: 4px 11px; border-radius: 999px; font-weight: 700; letter-spacing: 0.6px; }
+    .modal-header .badge.pier { background: rgba(0,249,255,0.12); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
+    .modal-header .badge.shore { background: rgba(192,38,255,0.12); color: var(--accent-violet); border: 1px solid var(--accent-violet); }
+    .modal-header h2 { margin: 0; font-size: 21px; font-weight: 700; letter-spacing: -0.01em; }
+    .modal-close { background: none; border: none; color: var(--text-secondary); font-size: 28px; line-height: 1; cursor: pointer; padding: 0 4px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 999px; }
+    .modal-close:hover { color: var(--accent-cyan); background: rgba(255,255,255,0.04); }
+    .modal-body { padding: 18px 20px 20px; overflow-y: auto; flex: 1; position: relative; z-index: 1; }
+    .field { display: grid; grid-template-columns: 86px 1fr; gap: 4px 12px; margin-bottom: 9px; font-size: 14px; }
+    .field-label { color: var(--text-secondary); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .field-value { color: var(--text-primary); }
+    .address-row { display: flex; align-items: center; gap: 8px; }
+    .copy-btn { width: 32px; height: 32px; min-width: 32px; min-height: 32px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: var(--text-secondary); font-size: 13px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all 0.1s ease; }
+    .copy-btn:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(0,249,255,0.08); }
+    .species-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; }
+    .species-pill { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-primary); white-space: nowrap; }
+    .modal-description { font-size: 14.5px; line-height: 1.55; color: var(--text-primary); margin: 8px 0 14px; }
+    .modal-tip { font-size: 12.5px; padding: 8px 12px; border-radius: 10px; background: rgba(0,249,255,0.06); border: 1px solid rgba(0,249,255,0.2); color: var(--accent-cyan); margin-bottom: 14px; }
+    .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 1; }
+    .modal-actions .modal-btn {
+      min-height: 52px; padding: 12px 16px; font-size: 15px; font-weight: 700; border-radius: 12px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px; border: 2px solid;
+    }
+    .modal-close-text { grid-column: 1 / -1; background: none; border: none; color: var(--text-secondary); font-size: 13px; padding: 6px 4px 2px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; opacity: 0.75; font-weight: 500; justify-self: center; min-height: 32px; }
+    .modal-close-text:hover { color: var(--text-primary); opacity: 1; }
+  </style>
+</head>
+<body class="bg-[#0a0a0f] text-[#f0f0ff]">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-[#0a0a0f]/95 backdrop-blur-xl border-b border-white/10 py-4">
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-x-3">
+          <!-- Animated Submarine Radar Logo - enhanced container for stronger cyberpunk presence -->
+          <div class="relative flex-shrink-0 p-1 rounded-full bg-[#0a0a0f] ring-1 ring-[#00f9ff]/30 shadow-[0_0_20px_rgba(0,249,255,0.25)]">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="radar-logo w-11 h-11 drop-shadow-[0_0_12px_#00f9ff]" aria-label="FishMap Radar Logo">
+            <style>
+              .radar-logo .pulse-ring { animation: radar-pulse 2.2s ease-in-out infinite alternate; }
+              @keyframes radar-pulse { from { opacity: 0.4; } to { opacity: 0.82; } }
+              .radar-logo .sweep { animation: radar-sweep 3.7s linear infinite; transform-origin: 50px 50px; }
+              @keyframes radar-sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+            </style>
+            <defs>
+              <filter id="glow-cyan" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="b1"/>
+                <feGaussianBlur in="SourceGraphic" stdDeviation="4.5" result="b2"/>
+                <feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="glow-violet" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="b1"/>
+                <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="b2"/>
+                <feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="glow-magenta" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="b1"/>
+                <feMerge><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <!-- Outer cyan ring -->
+            <circle cx="50" cy="50" r="46" fill="none" stroke="#00f9ff" stroke-width="1.8" opacity="0.55" filter="url(#glow-cyan)"/>
+            <!-- Mid cyan ring -->
+            <circle cx="50" cy="50" r="33" fill="none" stroke="#00f9ff" stroke-width="1.2" opacity="0.45"/>
+            <!-- Violet ring (pulsing) -->
+            <circle cx="50" cy="50" r="20" fill="none" stroke="#c026ff" stroke-width="1.5" opacity="0.65" filter="url(#glow-violet)" class="pulse-ring"/>
+            <!-- Inner magenta accent ring -->
+            <circle cx="50" cy="50" r="9" fill="none" stroke="#ff00aa" stroke-width="1.3" opacity="0.75"/>
+            <!-- Sonar ping -->
+            <circle cx="50" cy="50" r="4" fill="none" stroke="#00f9ff" stroke-width="1.2" opacity="0.6">
+              <animate attributeName="r" values="4;13;4" dur="2.6s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.65;0.05;0.65" dur="2.6s" repeatCount="indefinite"/>
+            </circle>
+            <!-- Submarine / periscope central icon -->
+            <line x1="38" y1="52" x2="62" y2="52" stroke="#00f9ff" stroke-width="2.8" stroke-linecap="round" opacity="0.7" filter="url(#glow-cyan)"/>
+            <line x1="50" y1="50" x2="50" y2="34" stroke="#00f9ff" stroke-width="2.2" stroke-linecap="round" filter="url(#glow-cyan)"/>
+            <circle cx="50" cy="31" r="3.8" fill="#0a0a0f" stroke="#ff00aa" stroke-width="1.8" filter="url(#glow-magenta)"/>
+            <circle cx="50" cy="29.5" r="1.3" fill="#c026ff" opacity="0.9"/>
+            <circle cx="50" cy="50" r="2.8" fill="#00f9ff" filter="url(#glow-cyan)"/>
+            <!-- Rotating sweep -->
+            <g class="sweep">
+              <line x1="50" y1="50" x2="50" y2="4" stroke="#00f9ff" stroke-width="11" stroke-linecap="round" opacity="0.09"/>
+              <line x1="50" y1="50" x2="50" y2="4" stroke="#00f9ff" stroke-width="5" stroke-linecap="round" opacity="0.18" filter="url(#glow-cyan)"/>
+              <line x1="50" y1="50" x2="50" y2="4" stroke="#00f9ff" stroke-width="2.2" stroke-linecap="round" opacity="0.95" filter="url(#glow-cyan)"/>
+              <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="3.7s" repeatCount="indefinite"/>
+            </g>
+          </svg>
+          </div>
+          <div class="min-w-0">
+            <h1 class="text-3xl sm:text-4xl font-bold tracking-[0.06em] text-white neon-text-cyan leading-none">FishMap</h1>
+            <p class="text-[10px] sm:text-xs tracking-[2.8px] text-[#ff00aa] font-medium mt-0.5">SHORE • PIER • DOCK • BYRON CENTER, MI</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="near-me-btn"
+                  class="inline-flex items-center gap-2 px-5 h-11 rounded-2xl border border-[#00f9ff] bg-[#00f9ff]/10 text-[#00f9ff] font-semibold text-sm tracking-[0.5px] active:scale-[0.985] hover:bg-[#00f9ff]/20 hover:shadow-[0_0_12px_rgba(0,249,255,0.5)] transition-all min-w-[110px] justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00f9ff]">
+            <span>📍</span> <span>Near Me</span>
+          </button>
+          <button id="reset-btn"
+                  class="inline-flex items-center gap-2 px-4 h-11 rounded-2xl border border-[#c026ff] bg-[#c026ff]/10 text-[#c026ff] font-semibold text-sm tracking-[0.5px] active:scale-[0.985] hover:bg-[#c026ff]/20 hover:shadow-[0_0_12px_rgba(192,38,255,0.5)] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c026ff]">
+            ⟲ Reset
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Intro for amateur anglers -->
+    <div class="py-6 text-center max-w-md mx-auto">
+      <p class="text-[#a0a0c0] text-[15px] leading-relaxed">Quick public shore, pier &amp; dock fishing for busy anglers. All spots within 15 miles of Byron Center — no boat required. Perfect for 1–2 hour trips after work or on weekends.</p>
+      <p class="text-[11px] text-[#ff00aa] tracking-[2px] mt-2 font-medium">TAP A NEON MARKER OR USE NEAR ME TO START</p>
+    </div>
+
+    <!-- Map -->
+    <div class="relative rounded-3xl overflow-hidden bg-[#111118] p-1.5 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_20px_40px_-10px_rgba(0,0,0,0.6)] border border-white/5">
+      <div id="map" aria-label="Interactive map of 15 public fishing spots near Byron Center, Michigan"></div>
+      <div class="scanlines"></div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend mt-3">
+      <div class="legend-item"><span class="legend-dot cyan"></span><span>Pier / Dock (Cyan)</span></div>
+      <div class="legend-item"><span class="legend-dot violet"></span><span>Shore / Bank (Violet)</span></div>
+    </div>
+
+    <!-- Explore header -->
+    <div class="flex items-center justify-between mt-2 mb-3">
+      <h3 class="text-sm font-semibold tracking-[1.5px] text-[#a0a0c0]">ALL 15 PUBLIC SPOTS</h3>
+      <span class="text-[10px] text-[#666] font-mono">TAP ANY CARD OR MARKER</span>
+    </div>
+
+    <!-- Spot cards grid -->
+    <div id="spots-grid" aria-live="polite"></div>
+
+    <!-- Footer disclaimer -->
+    <footer class="mt-8 mb-10 pt-6 border-t border-white/10 text-center text-[11px] text-[#666] tracking-[0.5px] leading-relaxed">
+      <div class="max-w-prose mx-auto">
+        <strong class="text-[#a0a0c0]">FISHMAP</strong> • BYRON CENTER, MI • LOCAL SHORE &amp; PIER DATA<br>
+        Michigan fishing license required. Data is approximate and for informational use only — always verify current conditions, hours, and regulations with local authorities or Michigan DNR before fishing. Respect private property, pack out all trash, and practice ethical angling. Not affiliated with any government entity. Use at your own risk.
+      </div>
+    </footer>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <div class="msg" id="toast-msg"></div>
+    <div class="actions" id="toast-actions"></div>
+  </div>
+
+  <!-- Spot Detail Modal -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-description">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="flex-1 min-w-0">
+          <span id="modal-badge" class="badge"></span>
+          <h2 id="modal-title" class="text-[22px] leading-tight tracking-[-0.01em] mt-1"></h2>
+        </div>
+        <button class="modal-close" aria-label="Close modal" id="modal-close-btn">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <div class="field-label">Address</div>
+          <div class="address-row">
+            <div class="field-value flex-1" id="modal-address"></div>
+            <button id="modal-copy-btn" class="copy-btn" aria-label="Copy address" title="Copy address">⎘</button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Hours</div>
+          <div class="field-value" id="modal-hours"></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Parking</div>
+          <div class="field-value" id="modal-parking"></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Access</div>
+          <div class="field-value" id="modal-access"></div>
+        </div>
+
+        <div>
+          <div class="field-label" style="margin-bottom:6px">Target Species</div>
+          <div class="species-row" id="modal-species"></div>
+        </div>
+
+        <div class="modal-description" id="modal-description"></div>
+
+        <div class="modal-tip">
+          💡 Best for 45–90 min visits. Bring light spinning gear, worms or small jigs, and a camera.
+        </div>
+
+        <div class="modal-actions">
+          <button class="modal-btn" id="modal-open-maps-btn" aria-label="Open this fishing spot in Google Maps">
+            <span aria-hidden="true">🗺️</span>
+            <span class="btn-label">Open in Maps</span>
+          </button>
+          <button class="modal-btn" id="modal-drive-btn" aria-label="Get turn-by-turn driving directions">
+            <span aria-hidden="true">🚗</span>
+            <span class="btn-label">Drive There</span>
+          </button>
+          <button type="button" class="modal-close-text" id="modal-close-secondary">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    // FishMap — Professional single-file cyberpunk fishing map
+    // Fully responsive, mobile-first, production-ready
+    // ============================================================
+
+    const DEFAULT_CENTER = [42.81, -85.72];
+    const DEFAULT_ZOOM = 11;
+    const NEAR_ME_ZOOM = 13;
+    const HIGHLIGHT_DURATION_MS = 14500;
+
+    // === REAL DATA (15 public spots, validated) ===
+    const spotsData = [
+      {"name":"Whistlestop Park Pond","lat":42.8216,"lng":-85.7189,"address":"2120 76th St SW, Byron Center, MI 49315","access_type":"dock","hours":"Dawn - Dusk (park hours)","parking":"Paved lot onsite with overflow parking on Consumers Energy corridor nearby","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch"],"description":"Easy paved path access from the main parking area circles the 2.5-acre pond with two fishing decks for comfortable casting. Beginners do great with a simple bobber and worm rig or small jigs from the decks or bank; kids and families frequently catch bluegill and pumpkinseed here. Catch-and-release only. Best in spring through fall; year-round access for shore fishing.","approx_miles":0.8},
+      {"name":"Palmer Park","lat":42.8784,"lng":-85.6934,"address":"1275 52nd St SW, Wyoming, MI 49509","access_type":"shore","hours":"Dawn - Dusk (park hours)","parking":"Free paved lots with multiple access points and nearby restrooms","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch","Black Crappie"],"description":"Buck Creek winds through the park with fishing access from bridges and drier banks along the trails. Park near the main lots or trailheads and walk short distances to spots; ultralight spinning gear with worms or small spinners works well for panfish and bass. Popular local spot for relaxed 1-2 hour sessions. Good year-round bank access.","approx_miles":4.9},
+      {"name":"Heritage Park Pond","lat":42.8874,"lng":-85.7697,"address":"4264 Canal Ave SW, Grandville, MI 49418","access_type":"shore","hours":"7am - 10pm","parking":"Free paved lot with ample spaces near playground and pond area","species":["Largemouth Bass","Bluegill","Pumpkinseed"],"description":"The park pond offers easy shore access around the perimeter with open banks suitable for beginners. A short walk from the main parking and playground; simple cane pole or spin-cast setup with live bait or small lures produces bluegill and bass. Family-friendly urban pond fishing. Spring and early summer are prime.","approx_miles":5.9},
+      {"name":"Grand River Waterfront","lat":42.9015,"lng":-85.7765,"address":"Near 28th St SW and Grand River, Grandville, MI 49418","access_type":"shore","hours":"Dawn - Dusk","parking":"Free parking area with gravel access road and spaces for ~20-30 vehicles","species":["Smallmouth Bass","Largemouth Bass","Bluegill","Channel Catfish"],"description":"Public riverfront with nearly a mile of Grand River bank access via paths and seating areas. Easy entry from the parking and bike path; shore fishing with basic spinning tackle and live bait or soft plastics targets river species. Connects to Kent Trails. Good for relaxed bank sessions in warmer months.","approx_miles":6.9},
+      {"name":"Lamar Park Pond","lat":42.9238,"lng":-85.7314,"address":"2561 Porter SW, Wyoming, MI 49509","access_type":"shore","hours":"Dawn - Dusk (park hours)","parking":"Large free paved lots with multiple entrances and nearby shelters","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch","Black Crappie"],"description":"The on-site pond provides straightforward shore and bank fishing with trails around the water. Park in the main lots and walk to the pond edges; beginners succeed with bobber rigs, worms, or small crankbaits for panfish and bass. Family and wheelchair-friendly amenities nearby. Strong action in spring and summer.","approx_miles":7.9},
+      {"name":"East Paris Nature Park Retention Pond","lat":42.8558,"lng":-85.5672,"address":"5995 East Paris Ave, Kentwood, MI 49512","access_type":"shore","hours":"Dawn - Dusk","parking":"Free paved lot with picnic shelter and restroom access nearby","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch"],"description":"Paved paths lead directly to the retention pond banks for easy shore fishing in this neighborhood nature park. Short walk from parking; simple tackle like a basic spinning rod with worms or small jigs is ideal for quick panfish catches. Quiet spot good for beginners practicing casts. Best spring through fall.","approx_miles":8.4},
+      {"name":"Johnson Park","lat":42.9303,"lng":-85.7563,"address":"2600 Wilson Avenue, Walker, MI 49534","access_type":"shore","hours":"Dawn - Dusk (park hours)","parking":"Multiple free paved lots including near boat launches and trails","species":["Smallmouth Bass","Largemouth Bass","Bluegill","Channel Catfish","Rock Bass"],"description":"Nearly 1.5 miles of Grand River frontage with ample bank access along trails and open areas. Park at main lots or Veterans Memorial Drive access and walk to the river edge; standard spinning or baitcasting with live bait or lures works for river species. Connects to Kent Trails and Millennium Park. Excellent for relaxed shore sessions.","approx_miles":8.5},
+      {"name":"Maplewood Park Lake","lat":42.9134,"lng":-85.8139,"address":"8049 12th Ave, Jenison, MI 49428","access_type":"shore","hours":"Dawn - Dusk","parking":"Free lot with spaces near the lake and park facilities","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch"],"description":"Public lake access with shore fishing along the banks in this community park setting. Easy from the parking area via short paths; ultralight gear with bobbers, worms, or small lures consistently produces panfish and bass for beginners. Popular local family spot. Prime in spring, summer, and fall.","approx_miles":8.6},
+      {"name":"Battjes Park","lat":42.9344,"lng":-85.7074,"address":"1655 Blandford SW, Wyoming, MI 49509","access_type":"pier","hours":"Dawn - Dusk","parking":"Free lot with approximately 65 spaces and additional street access","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch","Black Crappie"],"description":"Small urban lake with dedicated fishing piers providing stable platforms right over the water. Park in the main lot and walk short distance to the piers or shore; simple spinning setups with worms or jigs are perfect for kids and beginners targeting panfish and bass. Restrooms and shelters on site. Great year-round option.","approx_miles":8.6},
+      {"name":"Millennium Park","lat":42.9374,"lng":-85.7521,"address":"1415 Maynard Ave SW, Walker, MI 49534","access_type":"dock","hours":"Dawn - Dusk (park hours)","parking":"Large free paved lots with multiple trailheads and beach access nearby","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch","Black Crappie"],"description":"Multiple lakes and ponds throughout the park feature accessible observation and fishing decks. Enter at main gate or trailheads and follow paths to decks; beginners use basic bobber rigs or small lures for reliable panfish and bass action. Extensive trails connect everything. Excellent for 1-2 hour visits any season.","approx_miles":9.0},
+      {"name":"John Collins Park","lat":42.9518,"lng":-85.6112,"address":"650 Lakeside Dr SE, East Grand Rapids, MI 49506","access_type":"dock","hours":"7am - 10pm","parking":"Free paved lot with accessible spaces and restrooms nearby","species":["Largemouth Bass","Northern Pike","Bluegill","Yellow Perch","Black Crappie"],"description":"Reeds Lake west shore with wheelchair-accessible fishing and observation decks extending over the water. Short paved path from the main parking and boat launch area; simple tackle with live bait or soft plastics works well from the stable decks for panfish, bass, and occasional pike. Family-friendly with concerts in summer. Prime spring-fall.","approx_miles":11.2},
+      {"name":"Fish Ladder Park","lat":42.9715,"lng":-85.6750,"address":"606 Front Ave NW, Grand Rapids, MI 49504","access_type":"shore","hours":"24/7 (river access)","parking":"Street parking and nearby lots along the riverfront","species":["Smallmouth Bass","Largemouth Bass","Bluegill","Channel Catfish"],"description":"Direct Grand River shoreline access near the historic fish ladder with bank fishing opportunities. Park along Front Ave or nearby riverfront and walk to open shore spots; standard river tactics with live bait, spinners, or soft plastics for bass and cats. Urban setting with great views. Good spring and fall runs.","approx_miles":11.4},
+      {"name":"Grand River Park","lat":42.9414,"lng":-85.8573,"address":"9473 28th Ave, Jenison, MI 49428","access_type":"dock","hours":"Dawn - Dusk","parking":"Multiple free lots including trailhead and river access areas","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch"],"description":"Small lake with dedicated fishing dock plus Grand River overlook and bank access via hard-surfaced paths. Park at the trailhead lot for quick walk to the fishing dock; beginners thrive with bobber and worm setups or small lures for panfish. Restrooms and playground nearby. Excellent accessible option.","approx_miles":11.4},
+      {"name":"Waterfront Park","lat":42.9562,"lng":-85.6038,"address":"2205 Reeds Lake Blvd, East Grand Rapids, MI 49506","access_type":"pier","hours":"Dawn - Dusk","parking":"Limited free parking with paths to the lake","species":["Largemouth Bass","Northern Pike","Bluegill","Yellow Perch","Black Crappie"],"description":"Northwest Reeds Lake shore with fishing and observation piers extending into the water amid woodland setting. Short walk from parking via paved and unpaved paths; stable piers are beginner-friendly for casting bobbers or lures targeting panfish, bass, and pike. Quiet and scenic. Good spring through fall.","approx_miles":11.7},
+      {"name":"Riverside Park","lat":42.9994,"lng":-85.6718,"address":"Riverside Park, Grand Rapids, MI 49505","access_type":"dock","hours":"Dawn - Dusk (park hours)","parking":"Free lot with ~45 spaces at the south boat launch area","species":["Smallmouth Bass","Largemouth Bass","Bluegill","Channel Catfish","Rock Bass"],"description":"Grand River frontage with barrier-free fishing dock and extensive bank access along the river. Easy from the main parking near the launch; simple spinning gear with bait or lures produces river species from the dock or shore. Part of the city riverfront trail system. Solid option for urban shore fishing.","approx_miles":13.3}
+    ];
+
+    let map, spotMarkers = [], currentHighlightLayer = null, highlightTimeout = null, lastUserPosition = null;
+    let spotsGridEl, toastEl, toastMsgEl, toastActionsEl, modalEl, currentModalSpot = null;
+
+    function toRad(deg) { return deg * Math.PI / 180; }
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 3958.8;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)*Math.sin(dLon/2);
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
+    function isPierOrDock(type) { return type === 'pier' || type === 'dock'; }
+    function getColorForType(type) { return isPierOrDock(type) ? '#00f9ff' : '#c026ff'; }
+
+    function createCustomIcon(accessType) {
+      const color = getColorForType(accessType);
+      const isPier = isPierOrDock(accessType);
+      const inner = isPier 
+        ? `<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="4" y="10" width="18" height="6" rx="1" stroke="currentColor" stroke-width="2"/><line x1="7" y1="13" x2="7" y2="20" stroke="currentColor" stroke-width="1.5"/><line x1="19" y1="13" x2="19" y2="20" stroke="currentColor" stroke-width="1.5"/></svg>`
+        : `<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M5 17 Q8 12 13 17 Q18 12 21 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="13" cy="10" r="2.5" fill="currentColor"/></svg>`;
+      const html = `<div class="neon-marker" style="--neon-color:${color}"><div class="marker-glow"><div class="marker-inner">${inner}</div></div></div>`;
+      return L.divIcon({ className: '', html, iconSize: [48,48], iconAnchor: [24,24], popupAnchor: [0,-24] });
+    }
+
+    function addMarkers() {
+      spotMarkers = [];
+      spotsData.forEach(spot => {
+        const icon = createCustomIcon(spot.access_type);
+        const marker = L.marker([spot.lat, spot.lng], { icon, riseOnHover: true, keyboard: true }).addTo(map);
+        marker.on('click', () => {
+          if (window.openSpotModal) window.openSpotModal(spot);
+          map.flyTo([spot.lat, spot.lng], Math.max(map.getZoom(), 12.5), { duration: 0.45 });
+        });
+        spotMarkers.push({ spot, marker });
+      });
+    }
+
+    function highlightClosestSpots(closest) {
+      clearHighlights();
+      const layerGroup = L.layerGroup().addTo(map);
+      currentHighlightLayer = layerGroup;
+
+      closest.forEach(({ spot }) => {
+        const color = getColorForType(spot.access_type);
+        const halo = L.circleMarker([spot.lat, spot.lng], {
+          radius: 32, color, weight: 3, fill: false, opacity: 0.55, className: 'neon-halo'
+        }).addTo(layerGroup);
+        halo._path.classList.add('halo-inner');
+        halo._path.style.setProperty('--neon-color', color);
+      });
+
+      closest.forEach(({ spot }) => {
+        const found = spotMarkers.find(m => m.spot === spot);
+        if (found && found.marker._icon) {
+          const glow = found.marker._icon.querySelector('.marker-glow');
+          if (glow) {
+            glow.classList.add('pulse-highlight');
+            glow.style.setProperty('--neon-color', getColorForType(spot.access_type));
+          }
+        }
+      });
+
+      highlightTimeout = setTimeout(() => clearHighlights(), HIGHLIGHT_DURATION_MS);
+    }
+
+    function clearHighlights() {
+      if (currentHighlightLayer) { map.removeLayer(currentHighlightLayer); currentHighlightLayer = null; }
+      if (highlightTimeout) { clearTimeout(highlightTimeout); highlightTimeout = null; }
+      document.querySelectorAll('.marker-glow.pulse-highlight').forEach(el => el.classList.remove('pulse-highlight'));
+      document.querySelectorAll('.spot-card.near-highlight').forEach(el => el.classList.remove('near-highlight'));
+    }
+
+    function setupNearMe() {
+      const btn = document.getElementById('near-me-btn');
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        if (!navigator.geolocation) {
+          showToast('Geolocation not supported on this device.', false);
+          return;
+        }
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude: userLat, longitude: userLng } = pos.coords;
+            lastUserPosition = { lat: userLat, lng: userLng };
+            map.flyTo([userLat, userLng], NEAR_ME_ZOOM, { duration: 0.85 });
+
+            const withDist = spotsData.map(spot => ({ spot, dist: calculateDistance(userLat, userLng, spot.lat, spot.lng) }))
+              .sort((a,b) => a.dist - b.dist);
+            const top = withDist.slice(0, 5);
+
+            highlightClosestSpots(top);
+            updateListDistances(withDist);
+            highlightListCards(top.map(t => t.spot));
+
+            const nearest = withDist[0];
+            showToast(`Nearest spot ${nearest.dist.toFixed(1)} mi away. ${top.length} spots highlighted.`, true, top);
+
+            btn.disabled = false;
+            btn.style.opacity = '1';
+          },
+          (err) => {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            const msg = err.code === 1 ? 'Location permission denied. Enable in browser settings.' : 'Could not get your location. Try again.';
+            showToast(msg, false);
+          },
+          { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+        );
+      });
+    }
+
+    function updateListDistances(withDistances) {
+      const cards = document.querySelectorAll('#spots-grid .spot-card');
+      cards.forEach(card => {
+        const name = card.dataset.name;
+        const match = withDistances.find(d => d.spot.name === name);
+        const distEl = card.querySelector('.dist');
+        if (distEl && match) {
+          distEl.textContent = `${match.dist.toFixed(1)} mi from you`;
+          distEl.style.color = '#00f9ff';
+        }
+      });
+    }
+
+    function highlightListCards(closestSpots) {
+      document.querySelectorAll('#spots-grid .spot-card').forEach(card => {
+        card.classList.remove('near-highlight');
+        const name = card.dataset.name;
+        if (closestSpots.some(s => s.name === name)) {
+          setTimeout(() => card.classList.add('near-highlight'), 80);
+        }
+      });
+    }
+
+    function resetMapView() {
+      clearHighlights();
+      if (map) map.flyTo(DEFAULT_CENTER, DEFAULT_ZOOM, { duration: 0.7 });
+      // Revert distance labels
+      document.querySelectorAll('#spots-grid .spot-card .dist').forEach(el => {
+        const card = el.closest('.spot-card');
+        const spot = spotsData.find(s => s.name === card.dataset.name);
+        if (spot) el.textContent = `${spot.approx_miles} mi away`;
+        el.style.color = '';
+      });
+    }
+
+    function setupReset() {
+      const btn = document.getElementById('reset-btn');
+      if (btn) btn.addEventListener('click', resetMapView);
+    }
+
+    function populateSpotList() {
+      const grid = document.getElementById('spots-grid');
+      if (!grid) return;
+      spotsGridEl = grid;
+      grid.innerHTML = '';
+      spotsData.forEach(spot => {
+        const isPier = isPierOrDock(spot.access_type);
+        const badgeClass = isPier ? 'pier' : 'shore';
+        const badgeText = isPier ? 'PIER/DOCK' : 'SHORE';
+        const card = document.createElement('div');
+        card.className = 'spot-card';
+        card.dataset.name = spot.name;
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <h4 class="tracking-tight">${spot.name}</h4>
+              <p class="meta">${spot.address}</p>
+            </div>
+            <span class="badge ${badgeClass}">${badgeText}</span>
+          </div>
+          <div class="species">${spot.species.slice(0,4).map(s => `<span class="species-pill">${s}</span>`).join('')}</div>
+          <div class="dist">${spot.approx_miles} mi away</div>
+        `;
+        card.addEventListener('click', () => {
+          if (window.openSpotModal) window.openSpotModal(spot);
+          if (map) map.flyTo([spot.lat, spot.lng], Math.max(map.getZoom(), 13), { duration: 0.5 });
+        });
+        grid.appendChild(card);
+      });
+    }
+
+    function showToast(message, hasAction = false, closest = null) {
+      if (!toastEl) toastEl = document.getElementById('toast');
+      if (!toastMsgEl) toastMsgEl = document.getElementById('toast-msg');
+      if (!toastActionsEl) toastActionsEl = document.getElementById('toast-actions');
+      if (!toastEl) return;
+
+      toastMsgEl.textContent = message;
+      toastActionsEl.innerHTML = '';
+      if (hasAction && closest) {
+        const showBtn = document.createElement('button');
+        showBtn.textContent = 'Show on list';
+        showBtn.onclick = () => {
+          hideToast();
+          const firstCard = document.querySelector('#spots-grid .spot-card');
+          if (firstCard) firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        };
+        toastActionsEl.appendChild(showBtn);
+      }
+      toastEl.classList.add('visible');
+      setTimeout(() => { if (toastEl.classList.contains('visible') && !hasAction) hideToast(); }, hasAction ? 9500 : 5200);
+    }
+    function hideToast() { if (toastEl) toastEl.classList.remove('visible'); }
+
+    // === MODAL (premium, dual CTAs, themed, accessible) ===
+    function openSpotModal(spot) {
+      if (!modalEl) modalEl = document.getElementById('modal');
+      if (!modalEl) return;
+      currentModalSpot = spot;
+
+      const isPier = isPierOrDock(spot.access_type);
+      const content = modalEl.querySelector('.modal-content');
+      if (content) {
+        content.classList.remove('cyan-neon', 'violet-neon');
+        content.classList.add(isPier ? 'cyan-neon' : 'violet-neon');
+      }
+
+      const badge = document.getElementById('modal-badge');
+      badge.textContent = isPier ? 'PIER / DOCK' : 'SHORE / BANK';
+      badge.className = `badge ${isPier ? 'pier' : 'shore'}`;
+
+      document.getElementById('modal-title').textContent = spot.name;
+      document.getElementById('modal-address').textContent = spot.address;
+      document.getElementById('modal-hours').textContent = spot.hours;
+      document.getElementById('modal-parking').textContent = spot.parking;
+      document.getElementById('modal-access').textContent = spot.access_type.charAt(0).toUpperCase() + spot.access_type.slice(1);
+
+      const desc = document.getElementById('modal-description');
+      desc.textContent = spot.description;
+
+      const speciesEl = document.getElementById('modal-species');
+      speciesEl.innerHTML = '';
+      spot.species.forEach(s => {
+        const pill = document.createElement('span');
+        pill.className = 'species-pill modal';
+        pill.textContent = s;
+        speciesEl.appendChild(pill);
+      });
+
+      // Copy address
+      const copyBtn = document.getElementById('modal-copy-btn');
+      copyBtn.onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(spot.address);
+          const orig = copyBtn.textContent;
+          copyBtn.textContent = '✓';
+          setTimeout(() => { copyBtn.textContent = orig; }, 1200);
+        } catch {
+          const range = document.createRange();
+          range.selectNode(document.getElementById('modal-address'));
+          window.getSelection().removeAllRanges();
+          window.getSelection().addRange(range);
+        }
+      };
+
+      // Dual prominent CTAs
+      const openBtn = document.getElementById('modal-open-maps-btn');
+      openBtn.onclick = () => {
+        const url = `https://www.google.com/maps/search/?api=1&query=${spot.lat},${spot.lng}`;
+        window.open(url, '_blank', 'noopener,noreferrer');
+      };
+
+      const driveBtn = document.getElementById('modal-drive-btn');
+      driveBtn.onclick = () => {
+        const url = `https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}&travelmode=driving`;
+        window.open(url, '_blank', 'noopener,noreferrer');
+      };
+
+      modalEl.classList.add('visible');
+
+      // Focus first CTA for quick action
+      setTimeout(() => openBtn.focus(), 180);
+
+      const close = () => {
+        modalEl.classList.remove('visible');
+        if (content) content.classList.remove('cyan-neon', 'violet-neon');
+        document.removeEventListener('keydown', escHandler);
+      };
+
+      document.getElementById('modal-close-btn').onclick = close;
+      document.getElementById('modal-close-secondary').onclick = close;
+      modalEl.onclick = (e) => { if (e.target === modalEl) close(); };
+
+      const escHandler = (e) => { if (e.key === 'Escape') { close(); document.removeEventListener('keydown', escHandler); } };
+      document.addEventListener('keydown', escHandler, { once: true });
+    }
+
+    function initMap() {
+      const mapEl = document.getElementById('map');
+      if (!mapEl) { console.error('Map container missing'); return; }
+
+      map = L.map(mapEl, {
+        zoomControl: true, attributionControl: true, tap: true, tapTolerance: 18,
+        bounceAtZoomLimits: true, wheelPxPerZoomLevel: 90, zoomSnap: 0.25, zoomDelta: 0.5
+      });
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &amp; contributors &copy; CARTO',
+        subdomains: 'abcd', maxZoom: 19, minZoom: 8
+      }).addTo(map);
+
+      map.setView(DEFAULT_CENTER, DEFAULT_ZOOM);
+      addMarkers();
+      mapEl.style.touchAction = 'manipulation';
+    }
+
+    function bootstrap() {
+      initMap();
+      populateSpotList();
+      setupNearMe();
+      setupReset();
+
+      window.openSpotModal = openSpotModal;
+      window.fishMapSpots = spotsData;
+      window.fishMapCalculateDistance = calculateDistance;
+      window.fishMapReset = resetMapView;
+
+      // Clean prod: no console spam
+      console.log('%c[FishMap] Ready — 15 public fishing spots loaded.', 'color:#00f9ff');
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bootstrap);
+    } else {
+      bootstrap();
+    }
+  </script>
+</body>
+</html>
