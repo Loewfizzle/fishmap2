@@ -396,7 +396,7 @@
 
     <!-- Map -->
     <div class="relative rounded-3xl overflow-hidden bg-white p-1.5 shadow-[0_0_0_1px_#BAE6FD,0_10px_15px_-3px_rgb(0_0_0_/_0.1),0_4px_6px_-4px_rgb(0_0_0_/_0.1)] border border-[#7DD3FC]">
-      <div id="map" aria-label="Interactive map of 26 public fishing spots near Byron Center, Michigan"></div>
+      <div id="map" aria-label="Interactive map of 25 public fishing spots near Byron Center, Michigan"></div>
     </div>
 
     <!-- Legend -->
@@ -417,7 +417,7 @@
 
     <!-- Explore header -->
     <div class="flex items-center justify-between mt-2 mb-3">
-      <h3 id="spots-section-title" class="text-sm font-semibold tracking-[1.5px] text-[#a0a0c0]">ALL 26 PUBLIC SPOTS</h3>
+      <h3 id="spots-section-title" class="text-sm font-semibold tracking-[1.5px] text-[#a0a0c0]">ALL 25 PUBLIC SPOTS</h3>
       <span class="hidden sm:inline text-[10px] text-[#666] font-mono">TAP ANY CARD OR MARKER</span>
     </div>
 
@@ -515,7 +515,7 @@
     const NEAR_ME_ZOOM = 13;
     const HIGHLIGHT_DURATION_MS = 14500;
 
-    // === REAL DATA (26 public spots, validated) ===
+    // === REAL DATA (25 public spots, validated) ===
     const spotsData = [
       {"name":"Whistlestop Park Pond","lat":42.822201,"lng":-85.719352,"address":"2120 76th St SW, Byron Center, MI 49315","access_type":"dock","hours":"Dawn - Dusk (park hours)","parking":"Paved lot onsite with overflow parking on Consumers Energy corridor nearby","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch"],"description":"Easy paved path access from the main parking area circles the 2.5-acre pond with two fishing decks for comfortable casting. Beginners do great with a simple bobber and worm rig or small jigs from the decks or bank; kids and families frequently catch bluegill and pumpkinseed here. Catch-and-release only. Best in spring through fall; year-round access for shore fishing.","approx_miles":0.8},
       {"name":"Palmer Park","lat":42.875059,"lng":-85.695372,"address":"1275 52nd St SW, Wyoming, MI 49509","access_type":"shore","hours":"Dawn - Dusk (park hours)","parking":"Free paved lots with multiple access points and nearby restrooms","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch","Black Crappie"],"description":"Buck Creek winds through the park with fishing access from bridges and drier banks along the trails. Park near the main lots or trailheads and walk short distances to spots; ultralight spinning gear with worms or small spinners works well for panfish and bass. Popular local spot for relaxed 1-2 hour sessions. Good year-round bank access.","approx_miles":4.9},
@@ -538,7 +538,6 @@
       {"name":"Pickerel Lake Access","lat":42.8375,"lng":-85.4920,"address":"Pickerel Lake Public Access, 14000 84th St SE, Alto, MI 49302","access_type":"shore","hours":"Dawn - Dusk","parking":"Small gravel lot","species":["Largemouth Bass","Bluegill","Yellow Perch","Black Crappie"],"description":"Quiet lake with good shoreline access. Perch and crappie often cooperative. Great spot for ultralight gear and bobber fishing. Less crowded than bigger lakes.","approx_miles":13.5},
       {"name":"Paris Park","lat":42.855562619680846,"lng":-85.56646443975811,"address":"3213 60th St SE, Kentwood, MI 49512","access_type":"shore","hours":"Dawn - Dusk","parking":"Paved lot with trail access to nature preserve and pond areas","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch"],"description":"Peaceful nature preserve with paved paths winding through wetlands and pond areas. Excellent shore fishing in a quiet setting ideal for beginners and families.","approx_miles":8.0},
       {"name":"Chief Hazy Cloud Park","lat":42.9635,"lng":-85.4858,"address":"150 Pettis Ave NE, Ada, MI 49301","access_type":"shore","hours":"Dawn - Dusk","parking":"Small dedicated lot plus roadside parking with direct Grand River bank access","species":["Smallmouth Bass","Channel Catfish","Rock Bass","Bluegill","Northern Pike"],"description":"Nearly a mile of natural Grand River shoreline in a large wooded wetland park. Outstanding bank fishing with plenty of room to spread out and enjoy the scenery.","approx_miles":15.3},
-      {"name":"Home Acres Park","lat":42.855,"lng":-85.645,"address":"145 Farnham St SE, Kentwood, MI 49548","access_type":"shore","hours":"Dawn - Dusk","parking":"Paved parking with paths to fields and water features","species":["Largemouth Bass","Bluegill","Pumpkinseed"],"description":"Kentwood park with ball fields and nearby water access suitable for casual shore fishing. Easy parking and kid-friendly environment.","approx_miles":6.8},
       {"name":"Covenant Park","lat":42.8932,"lng":-85.5822,"address":"3724 Shaffer Ave SE, Kentwood, MI 49512","access_type":"shore","hours":"Dawn - Dusk","parking":"Paved parking with paths to pond and open green space","species":["Largemouth Bass","Bluegill","Pumpkinseed"],"description":"Kentwood neighborhood park with pond access for relaxed shore fishing. Convenient location with good parking and family amenities.","approx_miles":7.8},
       {"name":"8th Avenue Community Park","lat":42.89634,"lng":-85.80202,"address":"7050 8th Avenue, Jenison, MI 49428","access_type":"shore","hours":"Dawn - Dusk","parking":"Paved parking (non-resident fee in summer for some areas)","species":["Largemouth Bass","Bluegill","Pumpkinseed","Yellow Perch"],"description":"Georgetown Township park featuring a lake with dedicated fishing area, walking trail around the lake, public beach, and playground. Excellent for family shore fishing and casual outings.","approx_miles":6.7},
       {"name":"Bend Area Open Space","lat":42.941647,"lng":-85.812818,"address":"9500 12th Ave, Jenison, MI 49428","access_type":"shore","hours":"Dawn - Dusk","parking":"Small parking area and information kiosk","species":["Largemouth Bass","Northern Pike","Channel Catfish","Bluegill"],"description":"Large open space with nearly two miles of Grand River frontage. Popular for off-trail shore fishing and peaceful nature access along the river.","approx_miles":9.6},
@@ -754,9 +753,9 @@
       const titleEl = document.getElementById('spots-section-title');
       if (titleEl) {
         if (liveDistances && liveDistances.length > 0) {
-          titleEl.innerHTML = 'ALL 26 PUBLIC SPOTS <span class="text-[#0284C7] font-normal text-xs tracking-normal">— sorted by distance from you</span>';
+          titleEl.innerHTML = 'ALL 25 PUBLIC SPOTS <span class="text-[#0284C7] font-normal text-xs tracking-normal">— sorted by distance from you</span>';
         } else {
-          titleEl.textContent = 'ALL 26 PUBLIC SPOTS';
+          titleEl.textContent = 'ALL 25 PUBLIC SPOTS';
         }
       }
 
@@ -949,7 +948,7 @@
       window.fishMapReset = resetMapView;
 
       // Clean prod: no console spam
-      console.log('%c[FishMap] Ready — 26 public fishing spots loaded.', 'color:#0284C7');
+      console.log('%c[FishMap] Ready — 25 public fishing spots loaded.', 'color:#0284C7');
     }
 
     if (document.readyState === 'loading') {
