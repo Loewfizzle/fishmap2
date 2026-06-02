@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Last deployed: 2026-06-01 22:00:20 -->
+<!-- Last deployed: 2026-06-02 06:37:31 -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -530,7 +530,6 @@
 
     const DEFAULT_CENTER = [42.81, -85.72];
     const DEFAULT_ZOOM = 11;
-    const NEAR_ME_ZOOM = 13;
     const HIGHLIGHT_DURATION_MS = 14500;
 
     // === REAL DATA (25 public spots, validated) ===
@@ -667,6 +666,12 @@
             const { latitude: userLat, longitude: userLng } = pos.coords;
             lastUserPosition = { lat: userLat, lng: userLng };
 
+            // Pre-compute distances once (used for map view + sorted list + highlights)
+            const withDist = spotsData
+              .map(spot => ({ spot, dist: calculateDistance(userLat, userLng, spot.lat, spot.lng) }))
+              .sort((a, b) => a.dist - b.dist);
+            const top5 = withDist.slice(0, 5);
+
             // Scroll the map into view (so the flyTo is visible even if user was at bottom of page)
             const mapContainer = document.getElementById('map')?.parentElement;
             if (mapContainer) {
@@ -676,7 +681,16 @@
             // Give the scroll a moment to bring the map mostly into view before flying
             setTimeout(() => {
               if (map) {
-                map.flyTo([userLat, userLng], NEAR_ME_ZOOM, { duration: 0.85 });
+                // Build a bounds that includes the user's current location + the 5 closest fishing spots.
+                // This makes the map zoom to show BOTH your position and the relevant spots without
+                // zooming "all the way in" to just the pin. If the 5 spots are clustered near you it stays
+                // reasonably close; if they're spread it backs out just enough to frame them all.
+                const bounds = L.latLngBounds([userLat, userLng]);
+                top5.forEach(({ spot }) => bounds.extend([spot.lat, spot.lng]));
+
+                // flyToBounds + padding + maxZoom gives context around you + nearest options.
+                // maxZoom:14 prevents excessive close-up zoom even when all 5 spots are right next to you.
+                map.flyToBounds(bounds, { duration: 0.85, padding: [45, 45], maxZoom: 14 });
               }
 
               // Show a nice "You are here" indicator on the map
@@ -711,15 +725,11 @@
                 zIndexOffset: 1000
               }).addTo(map);
 
-              const withDist = spotsData.map(spot => ({ spot, dist: calculateDistance(userLat, userLng, spot.lat, spot.lng) }))
-                .sort((a,b) => a.dist - b.dist);
-              const top = withDist.slice(0, 5);
-
               // Re-render the entire list in real distance order from the user's location
               renderSpotList(withDist.map(d => d.spot), withDist);
 
-              highlightClosestSpots(top);
-              highlightListCards(top.map(t => t.spot));
+              highlightClosestSpots(top5);
+              highlightListCards(top5.map(t => t.spot));
 
               btn.disabled = false;
               btn.style.opacity = '1';
