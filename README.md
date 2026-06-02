@@ -28,7 +28,7 @@ Visit on your phone or desktop:
 
 (Or open `index.html` directly in any browser)
 
-**Social sharing note:** Includes Open Graph + Twitter Card meta tags + og-image.jpg (created from your header branding with the radar logo, FishMap name, and SHORE • PIER • DOCK line) so link previews on iMessage/WhatsApp/etc. look good. Update the https://loewfizzle.github.io/fishmap2/ URLs in the meta tags if you switch to a custom domain.
+**Social sharing note:** Includes Open Graph + Twitter Card meta tags + og-image.jpg (created from your header branding with the radar logo, FishMap name, and SHORE • PIER • DOCK line) so link previews on iMessage/WhatsApp/etc. look good. The image URLs are root-relative (/og-image.jpg) so they work on any domain. Update only the og:url (and the comment above it) if you want a different canonical URL for your custom subdomain.
 
 ## How to Use Locally
 
