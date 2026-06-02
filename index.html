@@ -649,56 +649,75 @@
           (pos) => {
             const { latitude: userLat, longitude: userLng } = pos.coords;
             lastUserPosition = { lat: userLat, lng: userLng };
-            map.flyTo([userLat, userLng], NEAR_ME_ZOOM, { duration: 0.85 });
 
-            // Show a nice "You are here" indicator on the map
-            clearUserLocation();
-
-            const accuracy = pos.coords.accuracy || 0;
-
-            // Accuracy circle (only if reasonable precision)
-            if (accuracy > 0 && accuracy < 2000) {
-              userLocationCircle = L.circle([userLat, userLng], {
-                radius: accuracy,
-                color: '#0EA5E9',
-                weight: 1,
-                opacity: 0.4,
-                fillColor: '#0EA5E9',
-                fillOpacity: 0.12,
-                interactive: false
-              }).addTo(map);
+            // Scroll the map into view (so the flyTo is visible even if user was at bottom of page)
+            const mapContainer = document.getElementById('map')?.parentElement;
+            if (mapContainer) {
+              mapContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
 
-            // Prominent user location dot (on top of accuracy circle)
-            const userIcon = L.divIcon({
-              className: 'user-location-marker',
-              html: `<div class="user-location-dot"></div>`,
-              iconSize: [15, 15],
-              iconAnchor: [7.5, 7.5],
-              popupAnchor: [0, -8]
-            });
-            userLocationMarker = L.marker([userLat, userLng], {
-              icon: userIcon,
-              interactive: false,
-              zIndexOffset: 1000
-            }).addTo(map);
+            // Give the scroll a moment to bring the map mostly into view before flying
+            setTimeout(() => {
+              if (map) {
+                map.flyTo([userLat, userLng], NEAR_ME_ZOOM, { duration: 0.85 });
+              }
 
-            const withDist = spotsData.map(spot => ({ spot, dist: calculateDistance(userLat, userLng, spot.lat, spot.lng) }))
-              .sort((a,b) => a.dist - b.dist);
-            const top = withDist.slice(0, 5);
+              // Show a nice "You are here" indicator on the map
+              clearUserLocation();
 
-            // Re-render the entire list in real distance order from the user's location
-            renderSpotList(withDist.map(d => d.spot), withDist);
+              const accuracy = pos.coords.accuracy || 0;
 
-            highlightClosestSpots(top);
-            highlightListCards(top.map(t => t.spot));
+              // Accuracy circle (only if reasonable precision)
+              if (accuracy > 0 && accuracy < 2000) {
+                userLocationCircle = L.circle([userLat, userLng], {
+                  radius: accuracy,
+                  color: '#0EA5E9',
+                  weight: 1,
+                  opacity: 0.4,
+                  fillColor: '#0EA5E9',
+                  fillOpacity: 0.12,
+                  interactive: false
+                }).addTo(map);
+              }
 
-            btn.disabled = false;
-            btn.style.opacity = '1';
+              // Prominent user location dot (on top of accuracy circle)
+              const userIcon = L.divIcon({
+                className: 'user-location-marker',
+                html: `<div class="user-location-dot"></div>`,
+                iconSize: [15, 15],
+                iconAnchor: [7.5, 7.5],
+                popupAnchor: [0, -8]
+              });
+              userLocationMarker = L.marker([userLat, userLng], {
+                icon: userIcon,
+                interactive: false,
+                zIndexOffset: 1000
+              }).addTo(map);
+
+              const withDist = spotsData.map(spot => ({ spot, dist: calculateDistance(userLat, userLng, spot.lat, spot.lng) }))
+                .sort((a,b) => a.dist - b.dist);
+              const top = withDist.slice(0, 5);
+
+              // Re-render the entire list in real distance order from the user's location
+              renderSpotList(withDist.map(d => d.spot), withDist);
+
+              highlightClosestSpots(top);
+              highlightListCards(top.map(t => t.spot));
+
+              btn.disabled = false;
+              btn.style.opacity = '1';
+            }, 380);
           },
           (err) => {
             btn.disabled = false;
             btn.style.opacity = '1';
+
+            // Still bring the map into view so the user sees the error toast in context
+            const mapContainer = document.getElementById('map')?.parentElement;
+            if (mapContainer) {
+              mapContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
             const msg = err.code === 1 ? 'Location permission denied. Enable in browser settings.' : 'Could not get your location. Try again.';
             showToast(msg, false);
           },
