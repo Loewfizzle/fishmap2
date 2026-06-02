@@ -693,9 +693,6 @@
             highlightClosestSpots(top);
             highlightListCards(top.map(t => t.spot));
 
-            const nearest = withDist[0];
-            showToast(`Nearest spot ${nearest.dist.toFixed(1)} mi away. ${top.length} spots highlighted.`, true, top);
-
             btn.disabled = false;
             btn.style.opacity = '1';
           },
