@@ -853,7 +853,13 @@
       speciesEl.innerHTML = '';
       spot.species.forEach(s => {
         const pill = document.createElement('span');
-        pill.className = 'species-pill modal';
+        pill.style.fontSize = '12px';
+        pill.style.padding = '4px 10px';
+        pill.style.borderRadius = '999px';
+        pill.style.background = '#E0F2FE';
+        pill.style.border = '1px solid #7DD3FC';
+        pill.style.color = '#0369A1';
+        pill.style.whiteSpace = 'nowrap';
         pill.textContent = s;
         speciesEl.appendChild(pill);
       });
