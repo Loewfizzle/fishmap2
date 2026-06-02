@@ -28,6 +28,8 @@ Visit on your phone or desktop:
 
 (Or open `index.html` directly in any browser)
 
+**Social sharing note:** Includes Open Graph + Twitter Card meta tags + og-image.jpg (created from your header branding with the radar logo, FishMap name, and SHORE • PIER • DOCK line) so link previews on iMessage/WhatsApp/etc. look good. Update the https://loewfizzle.github.io/fishmap2/ URLs in the meta tags if you switch to a custom domain.
+
 ## How to Use Locally
 
 1. Clone the repo
