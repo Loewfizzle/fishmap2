@@ -345,7 +345,7 @@
       border: 1px solid #7DD3FC;
       border-radius: 12px;
       padding: 7px 5px;
-      min-width: 70px;
+      min-width: 58px;
       box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05);
       flex-shrink: 0;
       display: flex;
@@ -466,26 +466,12 @@
     <!-- Intro for amateur anglers -->
     <div class="py-4 sm:py-6 text-center max-w-md mx-auto">
       <p class="text-[#475569] text-sm sm:text-[15px] leading-relaxed">Quick public shore, pier &amp; dock fishing for busy anglers. All spots within 15 miles of Byron Center — no boat required.</p>
-      <p class="text-[10px] sm:text-[11px] text-[#0D9488] tracking-[2px] mt-2 font-medium">TAP A MARKER OR USE NEAR ME TO START</p>
+      <p class="text-[10px] sm:text-[11px] text-[#0D9488] tracking-[2px] mt-2 font-bold">TAP A MARKER OR USE NEAR ME TO START</p>
     </div>
 
     <!-- Map -->
     <div class="relative z-10 rounded-3xl overflow-hidden bg-white p-1.5 shadow-[0_0_0_1px_#BAE6FD,0_10px_15px_-3px_rgb(0_0_0_/_0.1),0_4px_6px_-4px_rgb(0_0_0_/_0.1)] border border-[#7DD3FC]">
       <div id="map" aria-label="Interactive map of 25 public fishing spots near Byron Center, Michigan"></div>
-    </div>
-
-    <!-- Weather: current hour + next 3 hours from Open-Meteo (no key) -->
-    <!-- Placed right under map, before legend. Responsive: h-scroll row on mobile, 4-col grid on sm+ -->
-    <div class="mt-3 mb-2" id="weather-section" aria-label="Current and next few hours weather for Byron Center">
-      <div class="flex items-center justify-between mb-1.5 px-0.5">
-        <h3 class="text-[11px] sm:text-xs font-semibold tracking-[1px] text-[#475569]">CURRENT &amp; NEXT FEW HOURS • BYRON CENTER</h3>
-        <div id="weather-updated" class="hidden text-[9px] text-[#94A3B8] font-mono sm:block"></div>
-      </div>
-      <div id="weather-cards"
-           class="flex gap-2 overflow-x-auto snap-x snap-mandatory pb-2 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-4 sm:gap-2.5 sm:overflow-visible sm:pb-0"
-           aria-live="polite">
-        <!-- Populated by JS: 4 compact cards or loading/error state -->
-      </div>
     </div>
 
     <!-- Legend -->
@@ -501,6 +487,20 @@
           <svg width="16" height="16" viewBox="0 0 26 26" fill="none"><path d="M5 17 Q8 12 13 17 Q18 12 21 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="13" cy="10" r="2.5" fill="currentColor"/></svg>
         </span>
         <span>Shore / Bank</span>
+      </div>
+    </div>
+
+    <!-- Weather: current hour + next 4 hours from Open-Meteo (no key) -->
+    <!-- Placed right under legend (below map). Responsive: h-scroll row on mobile, 5-col grid on sm+ -->
+    <div class="mt-2 mb-2" id="weather-section" aria-label="Current and next few hours weather for Byron Center">
+      <div class="flex items-center justify-between mb-1.5 px-0.5">
+        <h3 class="text-[11px] sm:text-xs font-semibold tracking-[1px] text-[#475569]">CURRENT &amp; NEXT FEW HOURS • BYRON CENTER</h3>
+        <div id="weather-updated" class="hidden text-[9px] text-[#94A3B8] font-mono sm:block"></div>
+      </div>
+      <div id="weather-cards"
+           class="flex gap-1.5 overflow-x-auto snap-x snap-mandatory pb-2 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-5 sm:gap-2 sm:overflow-visible sm:pb-0"
+           aria-live="polite">
+        <!-- Populated by JS: 5 compact cards or loading/error state -->
       </div>
     </div>
 
@@ -652,9 +652,9 @@
     function getColorForType(type) { return isPierOrDock(type) ? '#0284C7' : '#0D9488'; }
 
     // ============================================================
-    // Weather (Open-Meteo, no key) — current + next 3 hours
-    // Cached in localStorage (~25 min). 4 glanceable cards.
-    // Mobile: horizontal scroll row. Desktop: 4-col grid.
+    // Weather (Open-Meteo, no key) — current + next 4 hours
+    // Cached in localStorage (~25 min). 5 glanceable cards.
+    // Mobile: horizontal scroll row. Desktop: 5-col grid.
     // WMO codes mapped to inline SVGs + short descs. °F + wind mph.
     // ============================================================
     const WEATHER_CACHE_KEY = 'fishmap_weather_v1';
@@ -743,7 +743,7 @@
       }
 
       const cards = [];
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 5; i++) {
         const idx = start + i;
         if (idx >= times.length) break;
         const tStr = times[idx];
@@ -798,7 +798,7 @@
         <div class="h-3.5 w-6 bg-[#E0F2FE] rounded mx-auto"></div>
         <div class="h-2 w-8 bg-[#E0F2FE] rounded mx-auto mt-0.5"></div>
       `;
-      weatherCardsEl.innerHTML = Array(4).fill(0).map(() =>
+      weatherCardsEl.innerHTML = Array(5).fill(0).map(() =>
         `<div class="weather-card loading">${skeleton}</div>`
       ).join('');
     }
