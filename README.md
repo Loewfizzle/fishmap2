@@ -34,7 +34,7 @@ Visit on your phone or desktop:
 
 1. Clone the repo
 2. Open `index.html` in your browser
-3. That's it — no build step, no dependencies
+3. That's it — no build step (open index.html directly). Note: `@vercel/analytics` is an optional prod dependency for Vercel Web Analytics (only active when deployed to Vercel).
 
 ## Tech Stack
 
@@ -42,6 +42,7 @@ Visit on your phone or desktop:
 - Tailwind CSS (CDN)
 - Leaflet.js (CDN)
 - Pure CSS animations for the radar logo
+- Optional: @vercel/analytics (for production analytics when deployed on Vercel)
 
 ## Data
 
