@@ -33,6 +33,24 @@
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
 
+  <!-- Demo import for @vercel/analytics/next (this project is plain static HTML, not Next.js/React).
+       The above script tag is the recommended integration for static sites.
+       This module import will only succeed locally after `npm i` if node_modules is served. -->
+  <script type="module">
+    try {
+      const { Analytics } = await import('./node_modules/@vercel/analytics/dist/next/index.mjs');
+      // Analytics is a React component. In a real Next.js app you would render <Analytics />.
+      // Here we just import it for compatibility / future use. It may trigger side effects.
+      console.log('%c[Vercel Analytics] Imported @vercel/analytics/next (demo only)', 'color:#0EA5E9');
+      // If you want to use the track function from the package in vanilla:
+      // import { track } from '@vercel/analytics';
+      // track('button_click', { label: 'near_me' });
+    } catch (err) {
+      // Expected in production static deploy (no node_modules) or direct file:// open.
+      // The _vercel script above still provides full pageview + custom event support via window.va()
+    }
+  </script>
+
   <style>
     :root {
       /* Fun, bright, fresh water-inspired professional palette */
@@ -956,6 +974,11 @@
       const btn = document.getElementById('near-me-btn');
       if (!btn) return;
       btn.addEventListener('click', () => {
+        // Track with Vercel Analytics (works via the injected script; package installed for reference)
+        if (window.va) {
+          window.va('event', { name: 'near_me_clicked' });
+        }
+
         if (!navigator.geolocation) {
           showToast('Geolocation not supported on this device.', false);
           return;
