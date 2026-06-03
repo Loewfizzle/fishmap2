@@ -36,6 +36,40 @@ Visit on your phone or desktop:
 2. Open `index.html` in your browser
 3. That's it — no build step (open index.html directly). Note: `@vercel/analytics` is an optional prod dependency for Vercel Web Analytics (only active when deployed to Vercel).
 
+## Deployment
+
+This is a static site (single `index.html`). It deploys easily to Vercel (recommended, for the built-in Analytics) or GitHub Pages.
+
+### Deploy to Vercel (recommended)
+
+1. Make sure you've pushed your latest changes to the GitHub repo.
+2. Go to [vercel.com](https://vercel.com) and sign in with GitHub.
+3. Click **"Add New Project"** → Import the `fishmap2` GitHub repository.
+4. Vercel will auto-detect it as a static site (we have a `vercel.json` to ensure this).
+5. Click **Deploy**.
+6. (Optional but recommended) In your new Vercel project settings:
+   - Go to **Analytics** tab and enable Vercel Web Analytics.
+   - The `<script>` tags already in `index.html` will start sending data automatically.
+
+Once deployed, update the "Live Demo" link in this README and the `og:url` meta tag in `index.html` to your new Vercel URL (e.g. `https://fishmap2.vercel.app`).
+
+You can also deploy from the CLI (from this directory):
+
+```bash
+npx vercel
+# Follow the prompts to log in and deploy
+# For production: npx vercel --prod
+```
+
+### Alternative: GitHub Pages
+
+1. In your GitHub repo settings → Pages → Source: "Deploy from a branch" → Branch: `main` / root.
+2. It will be available at `https://<username>.github.io/fishmap2/`.
+3. Update the `og:url` and README links accordingly.
+4. Note: Vercel Analytics will not work on GitHub Pages (remove the analytics script tags if you go this route).
+
+`vercel.json` is configured for zero-build static output.
+
 ## Tech Stack
 
 - Single self-contained HTML file
