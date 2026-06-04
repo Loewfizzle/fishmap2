@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- Night mode live on main (merged from night-mode branch). Toggle + localStorage persistence + Carto light/dark map tiles + full dark styling + system preference follow (until explicit toggle). -->
-<!-- Last deployed: 2026-06-04 11:16:52 (add tiny letter-spacing:0.5px; to first subtitle line for slight spacing between letters in "SHORE • PIER • DOCK"; word-spacing:-1px; still fits on one line; "BYRON CENTER, MI" unchanged) -->
+<!-- Last deployed: 2026-06-04 11:18:56 (add subtle shadow-sm + refined bg opacity /95 to header for better visual presence/definition without border; keeps seamless, no changes to buttons/subtitle) -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -615,7 +615,7 @@
 </head>
 <body class="bg-[#F0F9FF] dark:bg-[#0F172A] text-[#0F172A] dark:text-[#F1F5F9]">
   <!-- Header -->
-  <header class="sticky top-0 z-[100] bg-white/90 dark:bg-[#1E293B]/90 backdrop-blur-md py-4 sm:py-5">
+  <header class="sticky top-0 z-[100] bg-white/95 dark:bg-[#1E293B]/95 backdrop-blur-md py-4 sm:py-5 shadow-sm">
     <div class="max-w-5xl mx-auto px-4 sm:px-6">
       <div class="flex items-center justify-between gap-1 sm:gap-2 min-w-0">
         <div class="flex items-center gap-x-3 min-w-0">
