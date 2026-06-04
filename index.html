@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- Night mode live on main (merged from night-mode branch). Toggle + localStorage persistence + Carto light/dark map tiles + full dark styling + system preference follow (until explicit toggle). -->
-<!-- Last deployed: 2026-06-04 11:21:28 (lighten map wrapper: p-1, lighter border #E0F2FE, softer shadow; dark border #334155; cleaner modern feel, map defined but not heavy) -->
+<!-- Last deployed: 2026-06-04 14:21:19 (prominent spots heading with bold + tracking; subtle weather section tint bg + small padding for separation; only these areas) -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -609,6 +609,16 @@
       color: #94a3b8;
     }
 
+    /* Subtle separation for weather section - very light tint + slight padding, minimal */
+    #weather-section {
+      background-color: #f0f9ff;
+      padding-top: 4px;
+      padding-bottom: 4px;
+    }
+    .dark #weather-section {
+      background-color: #1e293b;
+    }
+
     /* Legend text already uses var(--text-secondary) so inherits .dark */
     /* Header, footer, intro, etc. use dark: Tailwind variants in markup */
 
@@ -749,7 +759,7 @@
 
     <!-- Explore header -->
     <div class="flex items-center justify-between mt-2 mb-3">
-      <h3 id="spots-section-title" class="text-sm font-semibold tracking-[1.5px] text-[#475569] dark:text-[#94A3B8]">ALL 25 PUBLIC SPOTS</h3>
+      <h3 id="spots-section-title" class="text-sm font-bold tracking-[2px] text-[#0f172a] dark:text-[#f1f5f9]">ALL 25 PUBLIC SPOTS</h3>
       <span class="hidden sm:inline text-[10px] text-[#666] dark:text-[#64748B] font-mono">TAP ANY CARD OR MARKER</span>
     </div>
 
