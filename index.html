@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- Night mode live on main (merged from night-mode branch). Toggle + localStorage persistence + Carto light/dark map tiles + full dark styling + system preference follow (until explicit toggle). -->
-<!-- Last deployed: 2026-06-04 11:18:56 (add subtle shadow-sm + refined bg opacity /95 to header for better visual presence/definition without border; keeps seamless, no changes to buttons/subtitle) -->
+<!-- Last deployed: 2026-06-04 11:21:28 (lighten map wrapper: p-1, lighter border #E0F2FE, softer shadow; dark border #334155; cleaner modern feel, map defined but not heavy) -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -156,8 +156,8 @@
       width: 100%;
       height: min(520px, 62vh);
       border-radius: 16px;
-      border: 1px solid #7DD3FC;
-      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      border: 1px solid #E0F2FE;
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
       overflow: hidden;
       background: #FFFFFF;
     }
@@ -462,7 +462,7 @@
 
     /* Map + leaflet in dark */
     .dark #map {
-      border-color: var(--border);
+      border-color: #334155;
       background: var(--bg-surface);
     }
     .dark .leaflet-container {
@@ -709,7 +709,7 @@
     </div>
 
     <!-- Map -->
-    <div class="relative z-10 rounded-3xl overflow-hidden bg-white dark:bg-[#1E293B] p-1.5 shadow-[0_0_0_1px_#BAE6FD,0_10px_15px_-3px_rgb(0_0_0_/_0.1),0_4px_6px_-4px_rgb(0_0_0_/_0.1)] border border-[#7DD3FC] dark:border-[#475569]">
+    <div class="relative z-10 rounded-3xl overflow-hidden bg-white dark:bg-[#1E293B] p-1">
       <div id="map" aria-label="Interactive map of 25 public fishing spots near Byron Center, Michigan"></div>
     </div>
 
