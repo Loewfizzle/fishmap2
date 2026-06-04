@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- Night mode live on main (merged from night-mode branch). Toggle + localStorage persistence + Carto light/dark map tiles + full dark styling + system preference follow (until explicit toggle). -->
-<!-- Last deployed: 2026-06-04 10:25:25 (tighter button internal padding (px-3) + reduced header/button gaps for more subheader width; dots • SHORE • PIER • DOCK; mobile two lines (SHORE • PIER • DOCK / BYRON CENTER, MICHIGAN); text-only Near Me/Reset) -->
+<!-- Last deployed: 2026-06-04 10:42:14 (smaller buttons: h-10, px-2/px-2 sm:px-3, w-10 h-10 toggle, tighter gaps; to fit subtitle phrases SHORE • PIER • DOCK / BYRON CENTER, MI without wrapping) -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -617,7 +617,7 @@
   <div class="max-w-5xl mx-auto px-4 sm:px-6 bg-white dark:bg-[#1E293B]">
     <!-- Header -->
     <header class="sticky top-0 z-[100] bg-white/90 dark:bg-[#1E293B]/90 backdrop-blur-md border-b border-[#7DD3FC] dark:border-[#475569] py-4 sm:py-5 shadow-sm">
-      <div class="flex items-center justify-between gap-2 sm:gap-3 min-w-0">
+      <div class="flex items-center justify-between gap-1 sm:gap-2 min-w-0">
         <div class="flex items-center gap-x-3 min-w-0">
           <!-- Animated Submarine Radar Logo -->
           <div class="relative flex-shrink-0">
@@ -681,19 +681,19 @@
             </p>
           </div>
         </div>
-        <div class="flex items-center gap-1 sm:gap-1.5">
+        <div class="flex items-center gap-0.5 sm:gap-1">
           <button id="near-me-btn"
-                  class="inline-flex items-center gap-2 px-3 sm:px-4 h-11 rounded-2xl bg-[#0EA5E9] text-white font-semibold text-sm active:scale-[0.985] hover:bg-[#0284C7] hover:shadow-lg transition-all justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0EA5E9] shadow-md">
+                  class="inline-flex items-center gap-2 px-2 sm:px-3 h-10 rounded-2xl bg-[#0EA5E9] text-white font-semibold text-sm active:scale-[0.985] hover:bg-[#0284C7] hover:shadow-lg transition-all justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0EA5E9] shadow-md">
             Near Me
           </button>
           <button id="reset-btn"
-                  class="inline-flex items-center gap-2 px-3 h-11 rounded-2xl border border-[#7DD3FC] bg-white text-[#0F172A] font-semibold text-sm active:scale-[0.985] hover:bg-[#F0F9FF] hover:shadow transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0EA5E9] dark:border-[#475569] dark:bg-[#1E293B] dark:text-[#F1F5F9] dark:hover:bg-[#334155]">
+                  class="inline-flex items-center gap-2 px-2 h-10 rounded-2xl border border-[#7DD3FC] bg-white text-[#0F172A] font-semibold text-sm active:scale-[0.985] hover:bg-[#F0F9FF] hover:shadow transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0EA5E9] dark:border-[#475569] dark:bg-[#1E293B] dark:text-[#F1F5F9] dark:hover:bg-[#334155]">
             Reset
           </button>
           <!-- Night mode toggle: sun/moon icon button. Placed next to Near Me + Reset per spec.
                Icon content is swapped by JS (moon when light, sun when dark). -->
           <button id="theme-toggle"
-                  class="inline-flex items-center justify-center w-11 h-11 rounded-2xl border border-[#7DD3FC] bg-white text-[#0F172A] active:scale-[0.985] hover:bg-[#F0F9FF] hover:shadow transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0EA5E9] dark:border-[#475569] dark:bg-[#1E293B] dark:text-[#F1F5F9] dark:hover:bg-[#334155]"
+                  class="inline-flex items-center justify-center w-10 h-10 rounded-2xl border border-[#7DD3FC] bg-white text-[#0F172A] active:scale-[0.985] hover:bg-[#F0F9FF] hover:shadow transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0EA5E9] dark:border-[#475569] dark:bg-[#1E293B] dark:text-[#F1F5F9] dark:hover:bg-[#334155]"
                   aria-label="Toggle night mode">
             <!-- JS will inject sun or moon SVG here -->
           </button>
