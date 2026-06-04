@@ -327,7 +327,7 @@
     .toast button:hover { background: #E0F2FE; }
 
     /* Modal - fun and friendly (supports light + night mode via .dark) */
-    .modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.35); backdrop-filter: blur(6px); display: none; align-items: flex-end; justify-content: center; z-index: 10000; padding: 0; }
+    .modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.35); backdrop-filter: blur(6px); display: none; align-items: flex-end; justify-content: center; z-index: 10000; padding: env(safe-area-inset-top) 0 0 0; }
     .modal.visible { display: flex; }
     .modal-content {
       background: #FFFFFF; width: 100%; max-width: 520px; max-height: 92vh; border-radius: 20px 20px 0 0;
@@ -339,6 +339,9 @@
       .modal-content { border-radius: 20px; max-height: 86vh; }
     }
     .modal-header { padding: 18px 20px 12px; border-bottom: 1px solid #E0F2FE; display: flex; align-items: center; justify-content: space-between; gap: 12px; position: relative; z-index: 1; }
+    @media (max-width: 639px) {
+      .modal-header { padding-top: 30px; }
+    }
     .modal-header .badge { font-size: 11px; padding: 4px 11px; border-radius: 999px; font-weight: 700; letter-spacing: 0.6px; }
     .modal-header .badge.pier { background: #DBEAFE; color: #0369A1; border: 1px solid #7DD3FC; }
     .modal-header .badge.shore { background: #CCFBF1; color: #0F766E; border: 1px solid #5EEAD4; }
