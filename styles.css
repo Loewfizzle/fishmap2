@@ -8,6 +8,15 @@
   --accent: #0EA5E9;           /* Bright sky blue */
   --accent-warm: #F59E0B;      /* Sunny amber for fun/energy */
   --border: #BAE6FD;
+  --border-strong: #7DD3FC;
+  --accent-bg: #E0F2FE;
+  --accent-border: #7DD3FC;
+  --accent-text: #0369A1;
+  --accent-strong: #0284C7;
+  --icon-secondary: #64748B;
+  --warm-bg: #FEF3C7;
+  --warm-border: #FCD34D;
+  --warm-text: #92400E;
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -23,6 +32,15 @@
   --accent: #67E8F9;           /* Neon cyan for dark (vibrant on dark tiles) */
   --accent-warm: #F59E0B;
   --border: #475569;
+  --border-strong: #475569;
+  --accent-bg: #1e3a5f;
+  --accent-border: #155e75;
+  --accent-text: #67E8F9;
+  --accent-strong: #67E8F9;
+  --icon-secondary: #CBD5E1;
+  --warm-bg: #451a03;
+  --warm-border: #92400e;
+  --warm-text: #fed7aa;
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
 }
@@ -76,14 +94,14 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
   width: 100%;
   height: min(520px, 62vh);
   border-radius: 16px;
-  border: 1px solid #E0F2FE;
+  border: 1px solid var(--bg-surface-2);
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
   overflow: hidden;
-  background: #FFFFFF;
+  background: var(--bg-surface);
 }
 
 .leaflet-container { 
-  background: #FFFFFF !important; 
+  background: var(--bg-surface) !important;
   font-family: inherit; 
 }
 .leaflet-control-zoom {
@@ -93,7 +111,7 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
   overflow: hidden;
 }
 .leaflet-control-zoom a {
-  background-color: #FFFFFF !important;
+  background-color: var(--bg-surface) !important;
   color: var(--accent) !important;
   border: none !important;
   font-weight: 600; 
@@ -101,7 +119,7 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
 }
 .leaflet-control-zoom a:hover { 
   background-color: #F1F5F9 !important; 
-  color: #0369A1 !important; 
+  color: var(--accent-text) !important;
 }
 .leaflet-control-attribution {
   background: rgba(255,255,255,0.8) !important; 
@@ -120,7 +138,7 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
 .neon-marker { background: transparent !important; border: none !important; }
 .marker-glow {
   width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
-  background: #FFFFFF;
+  background: var(--bg-surface);
   border: 3px solid var(--neon-color);
   border-radius: 9999px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -186,9 +204,9 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
   #spots-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
 }
 .spot-card {
-  background: #FFFFFF; 
-  border: 1px solid #7DD3FC; 
-  border-radius: 16px; 
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
   padding: 14px;
   cursor: pointer; 
   display: flex; 
@@ -198,14 +216,14 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 .spot-card:hover { 
-  border-color: #0EA5E9; 
-  transform: translateY(-3px); 
+  border-color: var(--accent);
+  transform: translateY(-3px);
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
 }
 .spot-card.near-highlight { 
-  border-color: #0284C7; 
-  box-shadow: 0 0 0 8px rgba(14, 165, 233, 0.32); 
-  background-color: #F0F9FF;
+  border-color: var(--accent-strong);
+  box-shadow: 0 0 0 8px rgba(14, 165, 233, 0.32);
+  background-color: var(--bg-primary);
 }
 .spot-card .badge { 
   align-self: flex-start; 
@@ -215,77 +233,77 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
   border-radius: 9999px; 
   letter-spacing: 0.5px; 
   text-transform: uppercase; 
-  background: #FEF3C7; 
+  background: var(--warm-bg);
   color: #B45309;
-  border: 1px solid #FCD34D;
+  border: 1px solid var(--warm-border);
 }
-.spot-card h4 { margin: 0; font-size: 15px; font-weight: 700; line-height: 1.2; color: #0EA5E9; }
+.spot-card h4 { margin: 0; font-size: 15px; font-weight: 700; line-height: 1.2; color: var(--accent); }
 .spot-card .meta { font-size: 12px; color: #64748B; margin: 0; }
 .spot-card .species { display: flex; flex-wrap: wrap; gap: 4px; margin-top: auto; }
 .species-pill { 
   font-size: 10px; 
   padding: 2px 7px; 
   border-radius: 999px; 
-  background: #E0F2FE; 
-  border: 1px solid #7DD3FC; 
-  color: #0369A1; 
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  color: var(--accent-text);
   white-space: nowrap; 
 }
-.spot-card .dist { font-size: 11px; font-weight: 700; color: #0EA5E9; margin-top: 4px; }
+.spot-card .dist { font-size: 11px; font-weight: 700; color: var(--accent); margin-top: 4px; }
 
 /* Toast */
 .toast {
   position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 20px); max-width: calc(100% - 32px); width: 420px;
-  background: #FFFFFF; border: 1px solid #7DD3FC; color: #0F172A; padding: 14px 18px;
+  background: var(--bg-surface); border: 1px solid var(--border-strong); color: var(--text-primary); padding: 14px 18px;
   border-radius: 12px; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); z-index: 9999;
   display: flex; align-items: center; gap: 12px; opacity: 0; pointer-events: none; transition: all 0.25s cubic-bezier(0.23,1,0.32,1);
 }
 .toast.visible { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
 .toast .msg { flex: 1; font-size: 14px; }
 .toast .actions { display: flex; gap: 8px; flex-shrink: 0; }
-.toast button { font-size: 12px; padding: 6px 12px; border-radius: 8px; border: 1px solid #0EA5E9; background: transparent; color: #0EA5E9; cursor: pointer; min-height: 32px; }
-.toast button:hover { background: #E0F2FE; }
+.toast button { font-size: 12px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; min-height: 32px; }
+.toast button:hover { background: var(--accent-bg); }
 
 /* Modal - fun and friendly (supports light + night mode via .dark) */
 .modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.35); backdrop-filter: blur(6px); display: none; align-items: flex-end; justify-content: center; z-index: 10000; padding: env(safe-area-inset-top) 0 0 0; }
 .modal.visible { display: flex; }
 .modal-content {
-  background: #FFFFFF; width: 100%; max-width: 520px; max-height: 92vh; border-radius: 20px 20px 0 0;
-  border: 1px solid #7DD3FC; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  background: var(--bg-surface); width: 100%; max-width: 520px; max-height: 92vh; border-radius: 20px 20px 0 0;
+  border: 1px solid var(--border-strong); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   overflow: hidden; display: flex; flex-direction: column; position: relative;
 }
 @media (min-width: 640px) {
   .modal { align-items: center; padding: 20px; }
   .modal-content { border-radius: 20px; max-height: 86vh; }
 }
-.modal-header { padding: 18px 20px 12px; border-bottom: 1px solid #E0F2FE; display: flex; align-items: center; justify-content: space-between; gap: 12px; position: relative; z-index: 1; }
+.modal-header { padding: 18px 20px 12px; border-bottom: 1px solid var(--bg-surface-2); display: flex; align-items: center; justify-content: space-between; gap: 12px; position: relative; z-index: 1; }
 @media (max-width: 639px) {
   .modal-header { padding-top: 30px; }
 }
 .modal-header .badge { font-size: 11px; padding: 4px 11px; border-radius: 999px; font-weight: 700; letter-spacing: 0.6px; }
-.modal-header .badge.pier { background: #DBEAFE; color: #0369A1; border: 1px solid #7DD3FC; }
+.modal-header .badge.pier { background: #DBEAFE; color: var(--accent-text); border: 1px solid var(--accent-border); }
 .modal-header .badge.shore { background: #CCFBF1; color: #0F766E; border: 1px solid #5EEAD4; }
-.modal-header h2 { margin: 0; font-size: 21px; font-weight: 700; letter-spacing: -0.01em; color: #0F172A; }
-.modal-close { background: none; border: none; color: #475569; font-size: 28px; line-height: 1; cursor: pointer; padding: 0 4px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 999px; }
-.modal-close:hover { color: #0EA5E9; background: #F0F9FF; }
+.modal-header h2 { margin: 0; font-size: 21px; font-weight: 700; letter-spacing: -0.01em; color: var(--text-primary); }
+.modal-close { background: none; border: none; color: var(--text-secondary); font-size: 28px; line-height: 1; cursor: pointer; padding: 0 4px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 999px; }
+.modal-close:hover { color: var(--accent); background: var(--bg-primary); }
 .modal-body { padding: 18px 20px 20px; overflow-y: auto; flex: 1; position: relative; z-index: 1; }
 .field { display: grid; grid-template-columns: 86px 1fr; gap: 4px 12px; margin-bottom: 9px; font-size: 14px; }
-.field-label { color: #475569; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
-.field-value { color: #0F172A; }
+.field-label { color: var(--text-secondary); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.field-value { color: var(--text-primary); }
 .address-row { display: flex; align-items: center; gap: 8px; }
-.copy-btn { width: 32px; height: 32px; min-width: 32px; min-height: 32px; background: #FFFFFF; border: 1px solid #BAE6FD; color: #475569; font-size: 13px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all 0.1s ease; }
-.copy-btn:hover { border-color: #0EA5E9; color: #0EA5E9; background: #E0F2FE; }
+.copy-btn { width: 32px; height: 32px; min-width: 32px; min-height: 32px; background: var(--bg-surface); border: 1px solid var(--border); color: var(--text-secondary); font-size: 13px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all 0.1s ease; }
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
 .species-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; }
 #modal-species .species-pill {
   font-size: 12px;
   padding: 4px 10px;
-  background: #E0F2FE;
-  border: 1px solid #7DD3FC;
-  color: #0369A1;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  color: var(--accent-text);
   white-space: nowrap;
 }
 .modal-description { font-size: 14.5px; line-height: 1.55; color: #0F172A; margin: 8px 0 14px; }
-.modal-tip { font-size: 12.5px; padding: 8px 12px; border-radius: 10px; background: #FEF3C7; border: 1px solid #FCD34D; color: #92400E; margin-bottom: 14px; }
+.modal-tip { font-size: 12.5px; padding: 8px 12px; border-radius: 10px; background: var(--warm-bg); border: 1px solid var(--warm-border); color: var(--warm-text); margin-bottom: 14px; }
 .modal-actions { display: grid; grid-template-columns: 1fr; gap: 10px; padding-top: 12px; border-top: 1px solid #E0F2FE; position: relative; z-index: 1; }
 @media (min-width: 360px) {
   .modal-actions { grid-template-columns: 1fr 1fr; }
@@ -323,8 +341,8 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
   transition: transform 0.15s ease;
 }
 
-.modal-close-text { grid-column: 1 / -1; background: none; border: none; color: #475569; font-size: 13px; padding: 6px 4px 2px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; opacity: 0.75; font-weight: 500; justify-self: center; min-height: 32px; }
-.modal-close-text:hover { color: #0F172A; opacity: 1; }
+.modal-close-text { grid-column: 1 / -1; background: none; border: none; color: var(--text-secondary); font-size: 13px; padding: 6px 4px 2px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; opacity: 0.75; font-weight: 500; justify-self: center; min-height: 32px; }
+.modal-close-text:hover { color: var(--text-primary); opacity: 1; }
 
 /* ========================================
    Weather section: hourly (current + 4)
@@ -335,8 +353,8 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
   /* grid always fills the full available width */
 }
 .weather-card {
-  background: #FFFFFF;
-  border: 1px solid #7DD3FC;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
   border-radius: 12px;
   padding: 7px 5px;
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05);
@@ -349,7 +367,7 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
   transition: border-color 0.1s ease, transform 0.1s ease;
 }
 .weather-card:hover {
-  border-color: #0EA5E9;
+  border-color: var(--accent);
   transform: translateY(-1px);
 }
 .weather-card.loading {
@@ -363,8 +381,8 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
 }
 .weather-error {
   width: 100%;
-  border: 1px solid #7DD3FC;
-  background: #fff;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-surface);
   border-radius: 12px;
   padding: 8px 10px;
   display: flex;
@@ -384,20 +402,6 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
    ======================================== */
 
 /* Map + leaflet in dark */
-.dark #map {
-  border-color: #334155;
-  background: var(--bg-surface);
-}
-.dark .leaflet-container {
-  background: var(--bg-surface) !important;
-}
-.dark .leaflet-control-zoom {
-  border-color: var(--border) !important;
-}
-.dark .leaflet-control-zoom a {
-  background-color: var(--bg-surface) !important;
-  color: var(--accent) !important;
-}
 .dark .leaflet-control-zoom a:hover {
   background-color: var(--bg-surface-2) !important;
   color: #a5f3fc !important;
@@ -406,9 +410,6 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
   background: rgba(30, 41, 59, 0.85) !important;
   color: #64748b !important;
   border-color: var(--border) !important;
-}
-.dark .leaflet-control-attribution a {
-  color: var(--accent) !important;
 }
 
 /* Markers pop better on dark tiles */
@@ -435,61 +436,17 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
   box-shadow: 0 0 0 8px rgba(103, 232, 249, 0.25);
   background-color: #0f172a;
 }
-.dark .spot-card h4 { color: var(--accent); }
-.dark .spot-card .meta { color: #64748b; }
-.dark .spot-card .dist { color: var(--accent); }
-
 .dark .spot-card .badge {
   background: #334155;
   color: #e0f2fe;
   border-color: #475569;
 }
 
-/* Species pills (cards + modal) */
-.dark .species-pill {
-  background: #1e3a5f;
-  border-color: #155e75;
-  color: var(--accent);
-}
-.dark #modal-species .species-pill {
-  background: #1e3a5f;
-  border: 1px solid #155e75;
-  color: var(--accent);
-}
-
 /* Modal (dark surface, high contrast) */
 .dark .modal {
   background: rgba(0, 0, 0, 0.7);
 }
-.dark .modal-content {
-  background: var(--bg-surface);
-  border-color: var(--border);
-}
-.dark .modal-header {
-  border-bottom-color: #334155;
-}
-.dark .modal-header h2 { color: var(--text-primary); }
-.dark .modal-close { color: #94a3b8; }
 .dark .modal-close:hover { color: var(--accent); background: #1e293b; }
-.dark .field-label { color: #94a3b8; }
-.dark .field-value { color: var(--text-primary); }
-.dark .copy-btn {
-  background: var(--bg-surface);
-  border-color: #475569;
-  color: #94a3b8;
-}
-.dark .copy-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: #1e3a5f;
-}
-.dark .modal-tip {
-  background: #451a03;
-  border-color: #92400e;
-  color: #fed7aa;
-}
-.dark .modal-close-text { color: #94a3b8; }
-.dark .modal-close-text:hover { color: var(--text-primary); }
 
 /* Modal badges (pier/shore) */
 .dark .modal-header .badge.pier {
@@ -503,26 +460,7 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
   border-color: #5eead4;
 }
 
-/* Toast */
-.dark .toast {
-  background: var(--bg-surface);
-  border-color: var(--border);
-  color: var(--text-primary);
-}
-.dark .toast button {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.dark .toast button:hover { background: #1e3a5f; }
-
 /* Weather cards */
-.dark .weather-card {
-  background: var(--bg-surface);
-  border-color: var(--border);
-}
-.dark .weather-card:hover {
-  border-color: var(--accent);
-}
 .dark .weather-error {
   background: var(--bg-surface);
   border-color: var(--border);
@@ -531,7 +469,7 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
 
 /* Subtle separation for weather section - very light tint + slight padding, minimal */
 #weather-section {
-  background-color: #f0f9ff;
+  background-color: var(--bg-primary);
   padding-top: 4px;
   padding-bottom: 4px;
 }
@@ -541,6 +479,3 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
 
 /* Legend text already uses var(--text-secondary) so inherits .dark */
 /* Header, footer, intro, etc. use dark: Tailwind variants in markup */
-
-/* Also update a few light-hardcoded rules that leak into dark for containers */
-.dark .modal-body { /* ensure scroll area ok */ }
