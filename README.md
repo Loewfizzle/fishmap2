@@ -73,7 +73,7 @@ npx vercel
 
 ## Tech Stack
 
-- Single HTML file plus `spots.js` (the spot data, loaded as a plain script before the main inline script — still no build step)
+- Single HTML file plus classic scripts in `js/` (spot data + app modules: theme, map, weather, modal, ui, app — loaded in dependency order, still no build step)
 - Tailwind CSS (precompiled to a committed `tailwind.css` — rebuild with `npm run build:css` after changing classes in `index.html`; still no build step at deploy time)
 - Leaflet.js (CDN)
 - Live hourly weather from [Open-Meteo](https://open-meteo.com) (free, no API key required)
