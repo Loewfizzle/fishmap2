@@ -6,7 +6,7 @@ A beautiful, mobile-first single-file web app for finding quick public fishing a
 
 ## Features
 
-- **20 real public fishing locations** (Kent County parks, Grand River accesses, Reeds Lake, etc.)
+- **25 real public fishing locations** (Kent County parks, Grand River accesses, Reeds Lake, etc.)
 - Animated submarine-style radar logo with neon cyberpunk effects
 - Interactive Leaflet map with custom neon markers
   - Cyan = Pier / Dock
@@ -73,7 +73,7 @@ npx vercel
 
 ## Tech Stack
 
-- Single self-contained HTML file
+- Single HTML file plus `spots.js` (the spot data, loaded as a plain script before the main inline script — still no build step)
 - Tailwind CSS (precompiled to a committed `tailwind.css` — rebuild with `npm run build:css` after changing classes in `index.html`; still no build step at deploy time)
 - Leaflet.js (CDN)
 - Live hourly weather from [Open-Meteo](https://open-meteo.com) (free, no API key required)
