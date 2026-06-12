@@ -43,39 +43,15 @@
   <title>FishMap • Shore • Pier • Dock • Byron Center, MI</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Night mode: enable Tailwind dark: variants using class strategy on <html>. -->
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      // No theme extend needed — we use arbitrary values + custom CSS .dark overrides
-    };
-  </script>
+  <!-- Tailwind precompiled to a static stylesheet (replaces the Play CDN, which is not for production).
+       darkMode 'class' strategy is set in tailwind.config.js. Rebuild after class changes: npm run build:css -->
+  <link rel="stylesheet" href="tailwind.css">
 
   <!-- Vercel Analytics (requires @vercel/analytics installed + deployment on Vercel) -->
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
-
-  <!-- Demo import for @vercel/analytics/next (this project is plain static HTML, not Next.js/React).
-       The above script tag is the recommended integration for static sites.
-       This module import will only succeed locally after `npm i` if node_modules is served. -->
-  <script type="module">
-    try {
-      const { Analytics } = await import('./node_modules/@vercel/analytics/dist/next/index.mjs');
-      // Analytics is a React component. In a real Next.js app you would render <Analytics />.
-      // Here we just import it for compatibility / future use. It may trigger side effects.
-      console.log('%c[Vercel Analytics] Imported @vercel/analytics/next (demo only)', 'color:#0EA5E9');
-      // If you want to use the track function from the package in vanilla:
-      // import { track } from '@vercel/analytics';
-      // track('button_click', { label: 'near_me' });
-    } catch (err) {
-      // Expected in production static deploy (no node_modules) or direct file:// open.
-      // The _vercel script above still provides full pageview + custom event support via window.va()
-    }
-  </script>
 
   <style>
     :root {
@@ -743,7 +719,7 @@
       </div>
     </div>
 
-    <!-- Weather: current hour + next 4 hours (dynamic from local time + hourlyData) -->
+    <!-- Weather: current hour + next 4 hours, live from Open-Meteo (see refreshWeather) -->
     <!-- Placed right under legend (below map). Matches previous design/placement. -->
     <div class="mt-2 mb-2" id="weather-section" aria-label="Current and next few hours weather for West Michigan">
       <div class="flex items-center justify-between mb-1.5 -mx-4 px-4 sm:-mx-6 sm:px-6">
@@ -930,36 +906,73 @@
     }
 
     // ============================================================
-    // Weather (dynamic 5 cards using hourlyData + new Date local time)
-    // Old look/design/size/placement/colors/icons restored.
-    // "Now" + next 4 hours, 12h labels, light cards, SVGs, exact structure.
+    // Weather (live data from Open-Meteo — free, no API key)
+    // "Now" + next 4 hours for the Byron Center area, in local
+    // (America/Detroit) time. Refreshes every 30 minutes.
     // ============================================================
-    const hourlyData = [
-      { hour: 0, temp: 68, condition: "Clear", wind: 2 },
-      { hour: 1, temp: 67, condition: "Clear", wind: 2 },
-      { hour: 2, temp: 66, condition: "Clear", wind: 3 },
-      { hour: 3, temp: 65, condition: "Clear", wind: 2 },
-      { hour: 4, temp: 65, condition: "Clear", wind: 1 },
-      { hour: 5, temp: 66, condition: "Partly Cloudy", wind: 2 },
-      { hour: 6, temp: 68, condition: "Partly Cloudy", wind: 3 },
-      { hour: 7, temp: 71, condition: "Mostly Sunny", wind: 4 },
-      { hour: 8, temp: 74, condition: "Sunny", wind: 5 },
-      { hour: 9, temp: 77, condition: "Sunny", wind: 6 },
-      { hour: 10, temp: 79, condition: "Sunny", wind: 7 },
-      { hour: 11, temp: 81, condition: "Mostly Sunny", wind: 8 },
-      { hour: 12, temp: 82, condition: "Mostly Sunny", wind: 9 },
-      { hour: 13, temp: 83, condition: "Sunny", wind: 10 },
-      { hour: 14, temp: 82, condition: "Sunny", wind: 9 },
-      { hour: 15, temp: 80, condition: "Partly Cloudy", wind: 8 },
-      { hour: 16, temp: 78, condition: "Overcast", wind: 7 },
-      { hour: 17, temp: 76, condition: "Overcast", wind: 6 },
-      { hour: 18, temp: 74, condition: "Overcast", wind: 5 },
-      { hour: 19, temp: 73, condition: "Overcast", wind: 4 },
-      { hour: 20, temp: 72, condition: "Light Rain", wind: 5 },
-      { hour: 21, temp: 71, condition: "Overcast", wind: 4 },
-      { hour: 22, temp: 70, condition: "Overcast", wind: 3 },
-      { hour: 23, temp: 69, condition: "Clear", wind: 3 }
-    ];
+    const WEATHER_TIMEZONE = 'America/Detroit';
+    const WEATHER_URL = `https://api.open-meteo.com/v1/forecast?latitude=${DEFAULT_CENTER[0]}&longitude=${DEFAULT_CENTER[1]}`
+      + '&hourly=temperature_2m,weather_code,wind_speed_10m'
+      + '&temperature_unit=fahrenheit&wind_speed_unit=mph'
+      + `&timezone=${encodeURIComponent(WEATHER_TIMEZONE)}&forecast_days=2`;
+    const WEATHER_REFRESH_MS = 30 * 60 * 1000;
+
+    let hourlyData = null;        // last successful fetch: [{ hour, temp, condition, wind }, ...] (48 hrs)
+    let weatherFetchedAt = null;  // Date of last successful fetch (shown in the "updated" stamp)
+
+    // WMO weather interpretation codes -> short display condition.
+    // https://open-meteo.com/en/docs (weather_code table)
+    function conditionFromWmoCode(code) {
+      if (code === 0) return 'Clear';
+      if (code === 1) return 'Mostly Sunny';
+      if (code === 2) return 'Partly Cloudy';
+      if (code === 3) return 'Overcast';
+      if (code === 45 || code === 48) return 'Fog';
+      if (code >= 51 && code <= 57) return 'Drizzle';
+      if (code >= 61 && code <= 67) return 'Rain';
+      if (code >= 71 && code <= 77) return 'Snow';
+      if (code >= 80 && code <= 82) return 'Showers';
+      if (code === 85 || code === 86) return 'Snow Showers';
+      if (code >= 95) return 'Thunderstorm';
+      return 'Cloudy';
+    }
+
+    async function fetchWeather() {
+      const res = await fetch(WEATHER_URL);
+      if (!res.ok) throw new Error(`Weather API responded ${res.status}`);
+      const data = await res.json();
+      const h = data.hourly;
+      hourlyData = h.time.map((t, i) => ({
+        hour: parseInt(t.slice(11, 13), 10),   // ISO "YYYY-MM-DDTHH:00" in WEATHER_TIMEZONE
+        temp: Math.round(h.temperature_2m[i]),
+        condition: conditionFromWmoCode(h.weather_code[i]),
+        wind: Math.round(h.wind_speed_10m[i])
+      }));
+      weatherFetchedAt = new Date();
+    }
+
+    // Current hour in the spots' timezone (visitors elsewhere still see Byron Center conditions).
+    function getCurrentLocalHour() {
+      return parseInt(new Intl.DateTimeFormat('en-US', {
+        timeZone: WEATHER_TIMEZONE, hour: 'numeric', hour12: false
+      }).format(new Date()), 10) % 24;
+    }
+
+    async function refreshWeather() {
+      try {
+        await fetchWeather();
+        renderWeatherCards();
+      } catch (err) {
+        // Keep showing the last good data if we have it; otherwise show the error state.
+        if (!hourlyData) showWeatherError();
+      }
+    }
+
+    function showWeatherError() {
+      weatherCardsEl = document.getElementById('weather-cards');
+      if (!weatherCardsEl) return;
+      weatherCardsEl.innerHTML = `<div class="weather-error">Live weather unavailable right now — tap Near Me anyway and check the sky.</div>`;
+    }
 
     function getSunIcon() {
       return `<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>`;
@@ -993,8 +1006,8 @@
       }
       if (c.includes('sunny')) return getSunIcon();
       if (c.includes('partly')) return getPartlyCloudyIcon();
-      if (c.includes('rain')) return getRainIcon();
-      return getCloudIcon(); // overcast, cloudy, etc.
+      if (c.includes('rain') || c.includes('drizzle') || c.includes('shower') || c.includes('storm')) return getRainIcon();
+      return getCloudIcon(); // overcast, fog, snow, cloudy, etc.
     }
 
     function formatHour(h24) {
@@ -1005,8 +1018,8 @@
 
     function updateWeatherTimestamp() {
       const el = document.getElementById('weather-updated');
-      if (!el) return;
-      const d = new Date();
+      if (!el || !weatherFetchedAt) return;
+      const d = weatherFetchedAt;
       let h = d.getHours();
       const ampm = h >= 12 ? 'p' : 'a';
       h = h % 12 || 12;
@@ -1019,8 +1032,20 @@
       weatherCardsEl = document.getElementById('weather-cards');
       if (!weatherCardsEl) return;
 
-      const now = new Date();
-      let currentHour = now.getHours();
+      // No data yet (initial load before the fetch resolves): show dimmed skeleton cards.
+      if (!hourlyData) {
+        weatherCardsEl.innerHTML = Array.from({ length: 5 }, () => `
+          <div class="weather-card loading" aria-hidden="true">
+            <div class="text-[9px] sm:text-[10px] font-semibold text-[#0F172A] dark:text-[#F1F5F9] tracking-tight">&nbsp;</div>
+            <div class="my-0.5 w-8 h-8 sm:w-9 sm:h-9"></div>
+            <div class="text-base sm:text-lg font-bold text-[#0284C7] dark:text-[#67E8F9] leading-none">—</div>
+            <div class="text-[8px] sm:text-[9px] text-[#475569] dark:text-[#64748B] leading-none mt-0.5">Loading…</div>
+          </div>
+        `).join('');
+        return;
+      }
+
+      const currentHour = getCurrentLocalHour();
 
       let startIndex = hourlyData.findIndex(d => d.hour === currentHour);
       if (startIndex === -1) {
@@ -1540,7 +1565,9 @@
       populateSpotList();
       setupNearMe();
       setupReset();
-      renderWeatherCards();
+      renderWeatherCards();      // skeleton until first fetch resolves
+      refreshWeather();          // live Open-Meteo data
+      setInterval(refreshWeather, WEATHER_REFRESH_MS);
 
       // Night mode wiring (after DOM + map ready)
       setupThemeToggle();

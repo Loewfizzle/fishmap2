@@ -1,8 +1,12 @@
 {
+  "scripts": {
+    "build:css": "tailwindcss -c tailwind.config.js -i tailwind.input.css -o tailwind.css --minify"
+  },
   "dependencies": {
     "@vercel/analytics": "^2.0.1"
   },
   "devDependencies": {
+    "tailwindcss": "^3.4.17",
     "vercel": "^54.9.0"
   }
 }

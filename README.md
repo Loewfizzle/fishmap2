@@ -12,6 +12,7 @@ A beautiful, mobile-first single-file web app for finding quick public fishing a
   - Cyan = Pier / Dock
   - Violet = Shore / Bank access
 - "Near Me" geolocation that highlights the closest spots
+- Live hourly weather (now + next 4 hours) for the Byron Center area via Open-Meteo
 
 - Detailed spot modals with:
   - Address, hours, parking info
@@ -73,8 +74,9 @@ npx vercel
 ## Tech Stack
 
 - Single self-contained HTML file
-- Tailwind CSS (CDN)
+- Tailwind CSS (precompiled to a committed `tailwind.css` — rebuild with `npm run build:css` after changing classes in `index.html`; still no build step at deploy time)
 - Leaflet.js (CDN)
+- Live hourly weather from [Open-Meteo](https://open-meteo.com) (free, no API key required)
 - Pure CSS animations for the radar logo
 - Optional: @vercel/analytics (for production analytics when deployed on Vercel)
 
