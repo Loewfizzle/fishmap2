@@ -302,9 +302,9 @@ header, #map, .leaflet-control-zoom a, .marker-glow {
   color: var(--accent-text);
   white-space: nowrap;
 }
-.modal-description { font-size: 14.5px; line-height: 1.55; color: #0F172A; margin: 8px 0 14px; }
+.modal-description { font-size: 14.5px; line-height: 1.55; color: var(--text-primary); margin: 8px 0 14px; }
 .modal-tip { font-size: 12.5px; padding: 8px 12px; border-radius: 10px; background: var(--warm-bg); border: 1px solid var(--warm-border); color: var(--warm-text); margin-bottom: 14px; }
-.modal-actions { display: grid; grid-template-columns: 1fr; gap: 10px; padding-top: 12px; border-top: 1px solid #E0F2FE; position: relative; z-index: 1; }
+.modal-actions { display: grid; grid-template-columns: 1fr; gap: 10px; padding-top: 12px; border-top: 1px solid var(--bg-surface-2); position: relative; z-index: 1; }
 @media (min-width: 360px) {
   .modal-actions { grid-template-columns: 1fr 1fr; }
 }
